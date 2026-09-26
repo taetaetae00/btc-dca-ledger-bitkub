@@ -13,7 +13,7 @@
     --surface-dark:#181715; --surface-dark-soft:#1f1e1b; --surface-dark-elevated:#252320;
     --ink:#141413; --body:#3d3d3a; --muted:#6c6a64; --muted-soft:#8e8b82;
     --hairline:#e6dfd8; --primary:#cc785c; --primary-active:#a9583e;
-    --on-dark:#faf9f5; --on-dark-soft:#a09d96;
+    --on-dark:#faf9f5; --on-dark-soft:#a09d96; --teal:#5db8a6;
     --success:#5db872; --error:#c64545;
   }
   *{box-sizing:border-box}
@@ -24,30 +24,43 @@
   }
   .mono{font-family:'JetBrains Mono',ui-monospace,monospace}
   .serif{font-family:'Fraunces',Georgia,serif}
-  .wrap{max-width:1080px;margin:0 auto;padding:48px 24px 64px}
+  .wrap{max-width:1120px;margin:0 auto;padding:48px 24px 64px}
+  header{display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:12px}
   header h1{
     font-family:'Fraunces',Georgia,serif; font-weight:400; font-size:36px;
     letter-spacing:-0.5px; margin:0 0 6px; color:var(--ink);
   }
   header h1 em{color:var(--primary); font-style:normal}
   .sub{color:var(--muted); font-size:14px}
+  .badge{
+    background:var(--primary); color:#fff; font-size:12.5px; font-weight:500;
+    padding:6px 14px; border-radius:9999px; white-space:nowrap;
+  }
 
   .stats{
-    display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
     gap:1px; background:var(--hairline); border:1px solid var(--hairline);
-    border-radius:12px; overflow:hidden; margin:28px 0 24px;
+    border-radius:12px; overflow:hidden; margin:24px 0;
   }
-  .stat{background:var(--surface-card); padding:18px 18px}
-  .stat .l{color:var(--muted); font-size:12px; margin-bottom:8px}
-  .stat .v{font-size:20px; font-weight:500}
-  .stat .v2{font-size:13px; color:var(--muted-soft); margin-top:2px}
+  .stat{background:var(--surface-card); padding:16px 16px}
+  .stat .l{color:var(--muted); font-size:11.5px; margin-bottom:7px}
+  .stat .v{font-size:18px; font-weight:500}
+  .stat .v2{font-size:12px; color:var(--muted-soft); margin-top:2px}
   .stat .v.pos{color:var(--success)} .stat .v.neg{color:var(--error)}
+
+  .filters{display:flex; gap:8px; margin-bottom:20px}
+  .fbtn{
+    background:var(--canvas); border:1px solid var(--hairline); color:var(--muted);
+    font-size:12.5px; padding:7px 14px; border-radius:9999px; cursor:pointer;
+  }
+  .fbtn.active{background:var(--ink); color:var(--canvas); border-color:var(--ink)}
 
   .grid{display:grid; grid-template-columns:320px 1fr; gap:20px}
   @media (max-width:800px){.grid{grid-template-columns:1fr}}
 
-  .card{background:var(--canvas); border:1px solid var(--hairline); border-radius:12px; padding:22px}
-  .card h2{font-size:13px; color:var(--muted); margin:0 0 14px; font-weight:500; letter-spacing:.2px}
+  .card{background:var(--canvas); border:1px solid var(--hairline); border-radius:12px; padding:22px; margin-bottom:16px}
+  .card h2{font-size:13px; color:var(--muted); margin:0 0 14px; font-weight:500}
+  .card h2 .n{color:var(--muted-soft); font-weight:400}
 
   input{
     width:100%; background:var(--canvas); border:1px solid var(--hairline);
@@ -63,7 +76,7 @@
     font-weight:500; font-size:14px; padding:11px 16px; cursor:pointer; width:100%;
   }
   button:hover{background:var(--primary-active)}
-  button.ghost{background:var(--surface-card); color:var(--ink); font-weight:500}
+  button.ghost{background:var(--surface-card); color:var(--ink)}
   .hint{margin-top:8px; font-size:11.5px; color:var(--muted-soft); line-height:1.5}
 
   table{width:100%; border-collapse:collapse; font-size:13px}
@@ -77,23 +90,32 @@
   .pending{color:var(--primary); font-size:10.5px; margin-left:6px}
   .usd{color:var(--muted-soft); font-size:11.5px}
 
-  .chart-card{
-    margin-top:20px; background:var(--surface-dark); border-radius:12px;
-    padding:22px; color:var(--on-dark);
-  }
-  .chart-card h2{color:var(--on-dark-soft)}
-  .chart-legend{display:flex; gap:16px; font-size:11.5px; color:var(--on-dark-soft); margin-top:8px}
-  svg{width:100%; height:180px; display:block; overflow:visible}
+  .dark-card{background:var(--surface-dark); border-radius:12px; padding:22px; color:var(--on-dark)}
+  .dark-card h2{color:var(--on-dark-soft); font-size:13px; font-weight:500; margin:0 0 14px}
+  .legend{display:flex; gap:16px; font-size:11.5px; color:var(--on-dark-soft); margin-top:10px; flex-wrap:wrap}
+  .legend span{display:flex; align-items:center; gap:6px}
+  .dot{width:8px; height:8px; border-radius:50%; display:inline-block}
+  svg{width:100%; display:block; overflow:visible}
+
+  .extremes{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+  .extreme{background:var(--surface-card); border-radius:10px; padding:14px}
+  .extreme .l{font-size:11px; color:var(--muted); margin-bottom:4px}
+  .extreme .v{font-size:15px; font-weight:500}
+  .extreme .t{font-size:11px; color:var(--muted-soft); margin-top:2px}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <h1>BTC DCA <em>Ledger</em></h1>
-    <div class="sub" id="syncedLine">กำลังโหลดข้อมูล…</div>
+    <div>
+      <h1>BTC DCA <em>Ledger</em></h1>
+      <div class="sub" id="syncedLine">กำลังโหลดข้อมูล…</div>
+    </div>
+    <div id="badgeSlot"></div>
   </header>
 
   <div class="stats" id="stats"></div>
+  <div class="filters" id="filters"></div>
 
   <div class="grid">
     <div>
@@ -111,12 +133,25 @@
         <div class="hint">รายการนี้จะถูกแทนที่ด้วยข้อมูลจริงจาก Bitkub เมื่อ sync รอบถัดไปทำงาน</div>
       </div>
 
-      <div class="card" style="margin-top:16px">
+      <div class="card">
         <h2>ราคา BTC ปัจจุบัน (THB) — สำหรับ P&amp;L</h2>
         <input id="curPrice" type="number" step="any">
-        <button class="ghost" id="saveCur">อัปเดต</button>
+        <button class="ghost" id="saveCur">อัปเดตเอง</button>
+        <div class="hint" id="liveLine"></div>
         <div class="hint" id="fxLine"></div>
       </div>
+
+      <div class="card">
+        <h2>ราคาถูกสุด / แพงสุด</h2>
+        <div class="extremes" id="extremes"></div>
+      </div>
+
+      <div class="card">
+        <h2>สรุปพฤติกรรม DCA</h2>
+        <div id="behaviorWrap"></div>
+      </div>
+
+      <button class="ghost" id="exportBtn">⬇ Export CSV</button>
     </div>
 
     <div>
@@ -125,17 +160,23 @@
         <div id="tableWrap"></div>
       </div>
 
-      <div class="chart-card">
-        <h2>ราคาที่ซื้อในแต่ละครั้ง</h2>
-        <svg id="chart" viewBox="0 0 640 180" preserveAspectRatio="none">
-          <defs>
-            <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#cc785c" stop-opacity="0.35"/>
-              <stop offset="100%" stop-color="#cc785c" stop-opacity="0"/>
-            </linearGradient>
-          </defs>
-        </svg>
-        <div class="chart-legend"><span>● ราคาต่อ BTC (THB)</span></div>
+      <div class="dark-card">
+        <h2>มูลค่าพอร์ต: เงินลงทุน vs มูลค่าปัจจุบัน</h2>
+        <svg id="portfolioChart" viewBox="0 0 640 190" preserveAspectRatio="none"></svg>
+        <div class="legend">
+          <span><i class="dot" style="background:#a09d96"></i>เงินลงทุนสะสม</span>
+          <span><i class="dot" style="background:#cc785c"></i>มูลค่าปัจจุบัน</span>
+        </div>
+      </div>
+
+      <div class="dark-card" style="margin-top:16px">
+        <h2>ราคาที่ซื้อในแต่ละครั้ง <span style="color:#5db8a6">— เส้นประ = ต้นทุนเฉลี่ย</span></h2>
+        <svg id="priceChart" viewBox="0 0 640 180" preserveAspectRatio="none"></svg>
+      </div>
+
+      <div class="dark-card" style="margin-top:16px">
+        <h2>เงินลงทุนรายเดือน</h2>
+        <svg id="monthChart" viewBox="0 0 640 160" preserveAspectRatio="none"></svg>
       </div>
     </div>
   </div>
@@ -145,6 +186,7 @@
 const LS_LOCAL = 'btc_dca_local_entries_v1';
 const LS_CUR = 'btc_dca_curprice_v1';
 const LS_FX = 'btc_dca_fx_thb_usd_v1';
+const LS_TICKER = 'btc_dca_ticker_v1';
 
 function loadLocal(){ try{ return JSON.parse(localStorage.getItem(LS_LOCAL)||'[]'); }catch(e){ return []; } }
 function saveLocal(list){ try{ localStorage.setItem(LS_LOCAL, JSON.stringify(list)); }catch(e){} }
@@ -154,11 +196,14 @@ function saveCur(v){ try{ localStorage.setItem(LS_CUR, String(v)); }catch(e){} }
 let synced = { entries: [], last_synced: null };
 let local = loadLocal();
 let curPrice = loadCur();
-let fxRate = null; // THB -> USD
+let livePrice = null;
+let fxRate = null;
+let dateFilter = 'all'; // all | year | 30d
 if(curPrice) document.getElementById('curPrice').value = curPrice;
 
 function fmt(n,d=0){ if(n===null||n===undefined||isNaN(n)) return '—'; return Number(n).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}); }
 function usd(thb){ if(fxRate==null || thb==null || isNaN(thb)) return ''; return '$'+fmt(thb*fxRate,2); }
+function effectivePrice(){ return curPrice != null ? curPrice : livePrice; }
 
 async function loadFx(){
   try{
@@ -170,14 +215,28 @@ async function loadFx(){
       fxRate = data.rates.USD;
       localStorage.setItem(LS_FX, JSON.stringify({rate: fxRate, t: Date.now()}));
     }
-  }catch(e){ /* offline or blocked — THB-only fallback */ }
+  }catch(e){}
+}
+
+async function loadLivePrice(){
+  try{
+    const cached = JSON.parse(localStorage.getItem(LS_TICKER)||'null');
+    if(cached && Date.now() - cached.t < 5*60*1000){ livePrice = cached.price; return; }
+    const res = await fetch('https://api.bitkub.com/api/market/ticker');
+    const data = await res.json();
+    const key = Object.keys(data||{}).find(k => /btc/i.test(k) && /thb/i.test(k));
+    if(key && data[key] && data[key].last){
+      livePrice = parseFloat(data[key].last);
+      localStorage.setItem(LS_TICKER, JSON.stringify({price: livePrice, t: Date.now()}));
+    }
+  }catch(e){ /* CORS or offline — falls back to manual input */ }
 }
 
 async function loadSynced(){
   try{
     const res = await fetch('./data/orders.json', {cache:'no-store'});
     if(res.ok) synced = await res.json();
-  }catch(e){ }
+  }catch(e){}
   render();
 }
 
@@ -206,8 +265,48 @@ function removeLocal(id){
   render();
 }
 
-function allEntries(){
+function allEntriesRaw(){
   return [...synced.entries, ...local].sort((a,b)=> new Date(a.time)-new Date(b.time));
+}
+function allEntries(){
+  const all = allEntriesRaw();
+  const now = Date.now();
+  if(dateFilter==='year'){
+    const y = new Date().getFullYear();
+    return all.filter(e => new Date(e.time).getFullYear() === y);
+  }
+  if(dateFilter==='30d'){
+    return all.filter(e => now - new Date(e.time).getTime() <= 30*24*60*60*1000);
+  }
+  return all;
+}
+
+document.getElementById('filters').innerHTML = [
+  ['all','ทั้งหมด'],['year','ปีนี้'],['30d','30 วันล่าสุด']
+].map(([k,l])=>`<button class="fbtn${k==='all'?' active':''}" data-f="${k}">${l}</button>`).join('');
+document.getElementById('filters').addEventListener('click', e=>{
+  const btn = e.target.closest('.fbtn'); if(!btn) return;
+  dateFilter = btn.dataset.f;
+  [...document.querySelectorAll('.fbtn')].forEach(b=>b.classList.toggle('active', b===btn));
+  render();
+});
+
+document.getElementById('exportBtn').onclick = () => {
+  const entries = allEntries();
+  const rows = [['time','spent_thb','price_thb','btc'], ...entries.map(e=>[e.time, e.spent, e.price, e.btc])];
+  const csv = rows.map(r=>r.join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'btc-dca-history.csv';
+  a.click();
+};
+
+function renderBadge(count){
+  const milestones = [10,25,50,100,200,365,500];
+  const hit = milestones.filter(m=>count>=m).pop();
+  document.getElementById('badgeSlot').innerHTML = hit
+    ? `<span class="badge">ซื้อครบ ${hit} ครั้งแล้ว 🎉</span>` : '';
 }
 
 function renderStats(){
@@ -215,8 +314,10 @@ function renderStats(){
   const totalSpent = entries.reduce((a,e)=>a+(e.spent||0),0);
   const totalBtc = entries.reduce((a,e)=>a+(e.btc||0),0);
   const avgCost = totalBtc ? totalSpent/totalBtc : null;
-  const curVal = (curPrice && totalBtc) ? totalBtc*curPrice : null;
+  const price = effectivePrice();
+  const curVal = (price && totalBtc) ? totalBtc*price : null;
   const pnl = curVal!==null ? curVal-totalSpent : null;
+  const pnlPct = (pnl!==null && totalSpent) ? (pnl/totalSpent*100) : null;
 
   const cells = [
     ['ลงทุนสะสม', 'THB '+fmt(totalSpent), usd(totalSpent), ''],
@@ -224,19 +325,51 @@ function renderStats(){
     ['ต้นทุนเฉลี่ย', avgCost?'THB '+fmt(avgCost):'—', avgCost?usd(avgCost):'', ''],
     ['จำนวนครั้ง', entries.length, '', ''],
     ['มูลค่าปัจจุบัน', curVal!==null?'THB '+fmt(curVal):'—', curVal!==null?usd(curVal):'', ''],
-    ['กำไร/ขาดทุน', pnl!==null?(pnl>=0?'+':'')+'THB '+fmt(pnl):'—', pnl!==null?usd(Math.abs(pnl)):'', pnl!==null?(pnl>=0?'pos':'neg'):''],
+    ['กำไร/ขาดทุน', pnl!==null?(pnl>=0?'+':'')+'THB '+fmt(pnl):'—',
+      pnlPct!==null?(pnlPct>=0?'+':'')+fmt(pnlPct,2)+'%':'', pnl!==null?(pnl>=0?'pos':'neg'):''],
   ];
   document.getElementById('stats').innerHTML = cells.map(([l,v,v2,cls])=>
     `<div class="stat"><div class="l">${l}</div><div class="v mono ${cls}">${v}</div>${v2?`<div class="v2 mono">${v2}</div>`:''}</div>`).join('');
 
-  const syncedLine = document.getElementById('syncedLine');
-  syncedLine.textContent = synced.last_synced
+  document.getElementById('syncedLine').textContent = synced.last_synced
     ? 'ซิงก์ล่าสุดจาก Bitkub: ' + new Date(synced.last_synced).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'})
     : 'ยังไม่มีข้อมูล sync (รอ GitHub Actions รันรอบแรก)';
+  document.getElementById('fxLine').textContent = fxRate ? `อัตราแลกเปลี่ยนอ้างอิง: 1 THB ≈ $${fxRate.toFixed(5)}` : '';
+  document.getElementById('liveLine').textContent = livePrice
+    ? `ราคาสดจาก Bitkub: THB ${fmt(livePrice)} (ใช้ค่านี้ถ้าไม่ได้กรอกเอง)` : 'ดึงราคาสดไม่สำเร็จ — กรอกเองด้านบน';
 
-  document.getElementById('fxLine').textContent = fxRate
-    ? `อัตราแลกเปลี่ยนอ้างอิง: 1 THB ≈ $${fxRate.toFixed(5)}`
-    : '';
+  renderBadge(allEntriesRaw().length);
+}
+
+function renderExtremes(){
+  const entries = allEntries().filter(e=>e.price!=null);
+  const wrap = document.getElementById('extremes');
+  if(!entries.length){ wrap.innerHTML = '<div class="empty">—</div>'; return; }
+  const cheapest = entries.reduce((a,b)=> a.price<b.price?a:b);
+  const priciest = entries.reduce((a,b)=> a.price>b.price?a:b);
+  const fmtDate = t => new Date(t).toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'});
+  wrap.innerHTML = `
+    <div class="extreme"><div class="l">ถูกสุด</div><div class="v mono">THB ${fmt(cheapest.price)}</div><div class="t">${fmtDate(cheapest.time)}</div></div>
+    <div class="extreme"><div class="l">แพงสุด</div><div class="v mono">THB ${fmt(priciest.price)}</div><div class="t">${fmtDate(priciest.time)}</div></div>
+  `;
+}
+
+function renderBehavior(){
+  const entries = allEntries();
+  const wrap = document.getElementById('behaviorWrap');
+  if(entries.length < 2){ wrap.innerHTML = '<div class="empty">ข้อมูลยังน้อยเกินไป</div>'; return; }
+  const times = entries.map(e=>new Date(e.time).getTime()).sort((a,b)=>a-b);
+  const spanDays = (times[times.length-1]-times[0])/86400000;
+  const diffs = [];
+  for(let i=1;i<times.length;i++) diffs.push(times[i]-times[i-1]);
+  diffs.sort((a,b)=>a-b);
+  const medianMs = diffs[Math.floor(diffs.length/2)] || 86400000;
+  const expected = Math.round(spanDays*86400000/medianMs) + 1;
+  const missed = Math.max(0, expected - entries.length);
+  wrap.innerHTML = `
+    <div class="extreme" style="margin-bottom:10px"><div class="l">ระยะเวลา DCA</div><div class="v mono">${fmt(spanDays,0)} วัน</div></div>
+    <div class="extreme"><div class="l">รอบที่คาดว่าพลาด</div><div class="v mono">${missed} ครั้ง</div><div class="t">ประมาณจากความถี่การซื้อทั่วไป</div></div>
+  `;
 }
 
 function renderTable(){
@@ -255,20 +388,7 @@ function renderTable(){
   wrap.innerHTML = `<table><thead><tr><th>เวลา</th><th>ใช้ (THB)</th><th>ราคา</th><th>ได้ (BTC)</th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 
-function renderChart(){
-  const svg = document.getElementById('chart');
-  const entries = allEntries();
-  const prices = entries.map(e=>e.price).filter(p=>p!=null);
-  if(!prices.length){ svg.innerHTML=''; return; }
-  const min = Math.min(...prices), max = Math.max(...prices);
-  const range = (max-min) || 1;
-  const w=640,h=180,padT=14,padB=14;
-  const pts = prices.map((p,i)=>{
-    const x = prices.length>1 ? i*w/(prices.length-1) : w/2;
-    const y = h-padB - ((p-min)/range)*(h-padT-padB);
-    return [x,y];
-  });
-  // smooth path via quadratic mid-points
+function smoothPath(pts){
   let path = `M${pts[0][0].toFixed(1)},${pts[0][1].toFixed(1)}`;
   for(let i=1;i<pts.length;i++){
     const [x0,y0]=pts[i-1], [x1,y1]=pts[i];
@@ -276,34 +396,102 @@ function renderChart(){
     path += ` Q${x0.toFixed(1)},${y0.toFixed(1)} ${mx.toFixed(1)},${((y0+y1)/2).toFixed(1)}`;
   }
   path += ` T${pts[pts.length-1][0].toFixed(1)},${pts[pts.length-1][1].toFixed(1)}`;
-  const areaPath = `${path} L${pts[pts.length-1][0].toFixed(1)},${h} L0,${h} Z`;
-
-  const gridLines = [0,0.25,0.5,0.75,1].map(f=>{
+  return path;
+}
+function gridLines(w,h,padT,padB){
+  return [0,0.25,0.5,0.75,1].map(f=>{
     const y = padT + f*(h-padT-padB);
     return `<line x1="0" y1="${y.toFixed(1)}" x2="${w}" y2="${y.toFixed(1)}" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>`;
   }).join('');
+}
 
+function renderPriceChart(){
+  const svg = document.getElementById('priceChart');
+  const entries = allEntries().filter(e=>e.price!=null);
+  if(entries.length<1){ svg.innerHTML=''; return; }
+  const prices = entries.map(e=>e.price);
+  const avgCost = entries.reduce((a,e)=>a+e.spent,0) / entries.reduce((a,e)=>a+e.btc,0);
+  const min = Math.min(...prices, avgCost), max = Math.max(...prices, avgCost);
+  const range = (max-min) || 1;
+  const w=640,h=180,padT=14,padB=14;
+  const y = p => h-padB - ((p-min)/range)*(h-padT-padB);
+  const pts = prices.map((p,i)=> [prices.length>1? i*w/(prices.length-1) : w/2, y(p)]);
+  const path = smoothPath(pts);
+  const areaPath = `${path} L${pts[pts.length-1][0].toFixed(1)},${h} L0,${h} Z`;
+  const avgY = y(avgCost).toFixed(1);
   const dots = pts.map((p,i)=> i===pts.length-1
     ? `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="4" fill="#cc785c"/>`
-    : `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="2" fill="#cc785c" opacity="0.7"/>`
-  ).join('');
-
+    : `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="2" fill="#cc785c" opacity="0.7"/>`).join('');
   svg.innerHTML = `
-    <defs><linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
+    <defs><linearGradient id="pfill" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#cc785c" stop-opacity="0.35"/>
       <stop offset="100%" stop-color="#cc785c" stop-opacity="0"/>
     </linearGradient></defs>
-    ${gridLines}
-    <path d="${areaPath}" fill="url(#areaFill)" stroke="none"/>
+    ${gridLines(w,h,padT,padB)}
+    <path d="${areaPath}" fill="url(#pfill)" stroke="none"/>
+    <line x1="0" y1="${avgY}" x2="${w}" y2="${avgY}" stroke="#5db8a6" stroke-width="1.5" stroke-dasharray="5,4"/>
     <path d="${path}" fill="none" stroke="#cc785c" stroke-width="2"/>
     ${dots}
   `;
 }
 
-function render(){ renderStats(); renderTable(); renderChart(); }
+function renderPortfolioChart(){
+  const svg = document.getElementById('portfolioChart');
+  const entries = allEntries();
+  if(entries.length<1){ svg.innerHTML=''; return; }
+  const price = effectivePrice();
+  let cumSpent=0, cumBtc=0;
+  const invested=[], value=[];
+  entries.forEach(e=>{ cumSpent+=e.spent||0; cumBtc+=e.btc||0; invested.push(cumSpent); value.push(price?cumBtc*price:cumSpent); });
+  const allVals = [...invested, ...value];
+  const min = 0, max = Math.max(...allVals)*1.05 || 1;
+  const w=640,h=190,padT=14,padB=14;
+  const y = v => h-padB - (v/max)*(h-padT-padB);
+  const xAt = i => invested.length>1 ? i*w/(invested.length-1) : w/2;
+  const ptsInv = invested.map((v,i)=>[xAt(i), y(v)]);
+  const ptsVal = value.map((v,i)=>[xAt(i), y(v)]);
+  const pathInv = smoothPath(ptsInv);
+  const pathVal = smoothPath(ptsVal);
+  svg.innerHTML = `
+    ${gridLines(w,h,padT,padB)}
+    <path d="${pathInv}" fill="none" stroke="#a09d96" stroke-width="1.5" stroke-dasharray="4,4"/>
+    <path d="${pathVal}" fill="none" stroke="#cc785c" stroke-width="2.5"/>
+    <circle cx="${ptsVal[ptsVal.length-1][0].toFixed(1)}" cy="${ptsVal[ptsVal.length-1][1].toFixed(1)}" r="4" fill="#cc785c"/>
+  `;
+}
+
+function renderMonthChart(){
+  const svg = document.getElementById('monthChart');
+  const entries = allEntries();
+  if(entries.length<1){ svg.innerHTML=''; return; }
+  const byMonth = {};
+  entries.forEach(e=>{
+    const d = new Date(e.time);
+    const key = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+    byMonth[key] = (byMonth[key]||0) + (e.spent||0);
+  });
+  const keys = Object.keys(byMonth).sort();
+  const vals = keys.map(k=>byMonth[k]);
+  const max = Math.max(...vals) || 1;
+  const w=640,h=160,padT=10,padB=24;
+  const bw = w/keys.length;
+  const bars = keys.map((k,i)=>{
+    const bh = (vals[i]/max)*(h-padT-padB);
+    const x = i*bw + bw*0.2, bwd = bw*0.6;
+    const label = k.slice(2).replace('-','/');
+    return `<rect x="${x.toFixed(1)}" y="${(h-padB-bh).toFixed(1)}" width="${bwd.toFixed(1)}" height="${bh.toFixed(1)}" rx="3" fill="#cc785c"/>
+      <text x="${(x+bwd/2).toFixed(1)}" y="${h-6}" fill="#a09d96" font-size="9" text-anchor="middle" font-family="Inter">${label}</text>`;
+  }).join('');
+  svg.innerHTML = `${gridLines(w,h,padT,padB)}${bars}`;
+}
+
+function render(){
+  renderStats(); renderExtremes(); renderBehavior(); renderTable();
+  renderPriceChart(); renderPortfolioChart(); renderMonthChart();
+}
 
 (async function init(){
-  await loadFx();
+  await Promise.all([loadFx(), loadLivePrice()]);
   await loadSynced();
 })();
 </script>
