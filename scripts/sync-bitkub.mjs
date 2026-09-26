@@ -23,12 +23,13 @@ function sign(timestamp, method, path, body) {
   return createHmac("sha256", API_SECRET).update(payload, "utf8").digest("hex");
 }
 
-async function bitkubPost(path, params) {
+async function bitkubGet(path, params) {
+  const query = new URLSearchParams(params || {}).toString();
+  const fullPath = query ? `${path}?${query}` : path;
   const timestamp = Date.now().toString();
-  const body = JSON.stringify(params || {});
-  const signature = sign(timestamp, "POST", path, body);
-  const res = await fetch(BASE_URL + path, {
-    method: "POST",
+  const signature = sign(timestamp, "GET", fullPath, "");
+  const res = await fetch(BASE_URL + fullPath, {
+    method: "GET",
     headers: {
       "Accept": "application/json",
       "Content-Type": "application/json",
@@ -36,11 +37,10 @@ async function bitkubPost(path, params) {
       "X-BTK-TIMESTAMP": timestamp,
       "X-BTK-SIGN": signature,
     },
-    body,
   });
   const json = await res.json();
   if (json.error && json.error !== 0) {
-    throw new Error(`Bitkub API error ${json.error} on ${path}: ${JSON.stringify(json)}`);
+    throw new Error(`Bitkub API error ${json.error} on ${fullPath}: ${JSON.stringify(json)}`);
   }
   return json;
 }
@@ -48,9 +48,8 @@ async function bitkubPost(path, params) {
 async function fetchAllOrderHistory() {
   let page = 1;
   const all = [];
-  // Walk pages until we get an empty page back.
   while (true) {
-    const res = await bitkubPost("/api/v3/market/my-order-history", {
+    const res = await bitkubGet("/api/v3/market/my-order-history", {
       sym: SYMBOL,
       p: page,
       lmt: 100,
@@ -58,9 +57,9 @@ async function fetchAllOrderHistory() {
     const rows = res.result || [];
     if (rows.length === 0) break;
     all.push(...rows);
-    if (rows.length < 100) break; // last page
+    if (rows.length < 100) break;
     page += 1;
-    if (page > 50) break; // safety cap
+    if (page > 50) break;
   }
   return all;
 }
@@ -75,7 +74,6 @@ async function loadExisting() {
 }
 
 function normalize(row) {
-  // Bitkub's field names have shifted across versions; read defensively.
   const spent = row.credit ?? row.amount_thb ?? (row.rate && row.amount ? row.rate * row.amount : null);
   const btc = row.amount ?? row.receive ?? null;
   const price = row.rate ?? null;
