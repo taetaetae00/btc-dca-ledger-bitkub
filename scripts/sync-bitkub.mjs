@@ -61,7 +61,6 @@ async function fetchAllOrderHistory() {
     page += 1;
     if (page > 50) break;
   }
-    console.log("RAW SAMPLE:", JSON.stringify(all[0], null, 2));
   return all;
 }
 
@@ -75,17 +74,18 @@ async function loadExisting() {
 }
 
 function normalize(row) {
-  const spent = row.credit ?? row.amount_thb ?? (row.rate && row.amount ? row.rate * row.amount : null);
-  const btc = row.amount ?? row.receive ?? null;
-  const price = row.rate ?? null;
-  const ts = row.ts ? row.ts * 1000 : Date.now();
-  const id = row.txn_id || row.order_id || row.hash || `${ts}-${price}-${btc}`;
+  const price = row.rate != null ? parseFloat(row.rate) : null;
+  const fee = row.fee != null ? parseFloat(row.fee) : 0;
+  const spent = row.amount != null ? parseFloat(row.amount) : null;
+  const btc = spent != null && price ? (spent - fee) / price : null;
+  const ts = row.ts ? Number(row.ts) : Date.now(); // already milliseconds
+  const id = row.txn_id || row.order_id || `${ts}-${price}-${spent}`;
   return {
     id: String(id),
     time: new Date(ts).toISOString(),
     price,
     btc,
-    spent: spent ?? (price && btc ? price * btc : null),
+    spent,
     side: (row.side || "buy").toLowerCase(),
   };
 }
