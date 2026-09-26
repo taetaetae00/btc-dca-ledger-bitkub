@@ -162,21 +162,22 @@
 
       <div class="dark-card">
         <h2>มูลค่าพอร์ต: เงินลงทุน vs มูลค่าปัจจุบัน</h2>
-        <svg id="portfolioChart" viewBox="0 0 640 190" preserveAspectRatio="none"></svg>
+        <svg id="portfolioChart" viewBox="0 0 640 200" preserveAspectRatio="none"></svg>
         <div class="legend">
           <span><i class="dot" style="background:#a09d96"></i>เงินลงทุนสะสม</span>
           <span><i class="dot" style="background:#cc785c"></i>มูลค่าปัจจุบัน</span>
         </div>
+        <div class="hint" id="portfolioNote" style="color:#a09d96"></div>
       </div>
 
       <div class="dark-card" style="margin-top:16px">
         <h2>ราคาที่ซื้อในแต่ละครั้ง <span style="color:#5db8a6">— เส้นประ = ต้นทุนเฉลี่ย</span></h2>
-        <svg id="priceChart" viewBox="0 0 640 180" preserveAspectRatio="none"></svg>
+        <svg id="priceChart" viewBox="0 0 640 200" preserveAspectRatio="none"></svg>
       </div>
 
       <div class="dark-card" style="margin-top:16px">
         <h2>เงินลงทุนรายเดือน</h2>
-        <svg id="monthChart" viewBox="0 0 640 160" preserveAspectRatio="none"></svg>
+        <svg id="monthChart" viewBox="0 0 640 170" preserveAspectRatio="none"></svg>
       </div>
     </div>
   </div>
@@ -404,6 +405,23 @@ function gridLines(w,h,padT,padB){
     return `<line x1="0" y1="${y.toFixed(1)}" x2="${w}" y2="${y.toFixed(1)}" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>`;
   }).join('');
 }
+function yAxisLabels(h,padT,padB,min,max,prefix=''){
+  return `
+    <text x="4" y="${(padT+9).toFixed(1)}" fill="#a09d96" font-size="10" font-family="JetBrains Mono">${prefix}${fmt(max)}</text>
+    <text x="4" y="${(h-padB-2).toFixed(1)}" fill="#a09d96" font-size="10" font-family="JetBrains Mono">${prefix}${fmt(min)}</text>
+  `;
+}
+function xAxisDateLabels(w,h,firstT,lastT){
+  const f = t => new Date(t).toLocaleDateString('th-TH',{day:'numeric',month:'short'});
+  return `
+    <text x="0" y="${h-2}" fill="#a09d96" font-size="9" font-family="Inter">${f(firstT)}</text>
+    <text x="${w}" y="${h-2}" fill="#a09d96" font-size="9" font-family="Inter" text-anchor="end">${f(lastT)}</text>
+  `;
+}
+function endLabel(x,y,text,anchorUp){
+  const dy = anchorUp ? -10 : 16;
+  return `<text x="${x.toFixed(1)}" y="${(y+dy).toFixed(1)}" fill="#cc785c" font-size="11" font-family="JetBrains Mono" text-anchor="end">${text}</text>`;
+}
 
 function renderPriceChart(){
   const svg = document.getElementById('priceChart');
@@ -413,50 +431,66 @@ function renderPriceChart(){
   const avgCost = entries.reduce((a,e)=>a+e.spent,0) / entries.reduce((a,e)=>a+e.btc,0);
   const min = Math.min(...prices, avgCost), max = Math.max(...prices, avgCost);
   const range = (max-min) || 1;
-  const w=640,h=180,padT=14,padB=14;
+  const w=640,h=200,padT=16,padB=32,padL=64;
+  const usableW = w-padL;
   const y = p => h-padB - ((p-min)/range)*(h-padT-padB);
-  const pts = prices.map((p,i)=> [prices.length>1? i*w/(prices.length-1) : w/2, y(p)]);
+  const pts = prices.map((p,i)=> [padL + (prices.length>1? i*usableW/(prices.length-1) : usableW/2), y(p)]);
   const path = smoothPath(pts);
-  const areaPath = `${path} L${pts[pts.length-1][0].toFixed(1)},${h} L0,${h} Z`;
+  const areaPath = `${path} L${pts[pts.length-1][0].toFixed(1)},${h-padB} L${padL},${h-padB} Z`;
   const avgY = y(avgCost).toFixed(1);
   const dots = pts.map((p,i)=> i===pts.length-1
     ? `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="4" fill="#cc785c"/>`
     : `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="2" fill="#cc785c" opacity="0.7"/>`).join('');
+  const last = pts[pts.length-1];
   svg.innerHTML = `
     <defs><linearGradient id="pfill" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#cc785c" stop-opacity="0.35"/>
       <stop offset="100%" stop-color="#cc785c" stop-opacity="0"/>
     </linearGradient></defs>
-    ${gridLines(w,h,padT,padB)}
+    ${gridLines(w,h-padB,padT,0)}
     <path d="${areaPath}" fill="url(#pfill)" stroke="none"/>
-    <line x1="0" y1="${avgY}" x2="${w}" y2="${avgY}" stroke="#5db8a6" stroke-width="1.5" stroke-dasharray="5,4"/>
+    <line x1="${padL}" y1="${avgY}" x2="${w}" y2="${avgY}" stroke="#5db8a6" stroke-width="1.5" stroke-dasharray="5,4"/>
+    <text x="${w}" y="${avgY-4}" fill="#5db8a6" font-size="10" font-family="JetBrains Mono" text-anchor="end">เฉลี่ย ${fmt(avgCost)}</text>
     <path d="${path}" fill="none" stroke="#cc785c" stroke-width="2"/>
     ${dots}
+    ${endLabel(last[0], last[1], fmt(prices[prices.length-1]), true)}
+    ${yAxisLabels(h-padB,padT,0,min,max)}
+    ${xAxisDateLabels(w,h,entries[0].time,entries[entries.length-1].time)}
   `;
 }
 
 function renderPortfolioChart(){
   const svg = document.getElementById('portfolioChart');
   const entries = allEntries();
-  if(entries.length<1){ svg.innerHTML=''; return; }
-  const price = effectivePrice();
+  const note = document.getElementById('portfolioNote');
+  if(entries.length<1){ svg.innerHTML=''; note.textContent=''; return; }
+  const liveOrManual = effectivePrice();
+  const price = liveOrManual || entries[entries.length-1].price;
+  note.textContent = liveOrManual ? '' : '* ดึงราคาสดไม่สำเร็จ — ใช้ราคาซื้อครั้งล่าสุดประมาณมูลค่าแทน กรอกราคาเองด้านซ้ายเพื่อความแม่นยำ';
   let cumSpent=0, cumBtc=0;
   const invested=[], value=[];
   entries.forEach(e=>{ cumSpent+=e.spent||0; cumBtc+=e.btc||0; invested.push(cumSpent); value.push(price?cumBtc*price:cumSpent); });
   const allVals = [...invested, ...value];
   const min = 0, max = Math.max(...allVals)*1.05 || 1;
-  const w=640,h=190,padT=14,padB=14;
+  const w=640,h=200,padT=16,padB=32,padL=64;
+  const usableW = w-padL;
   const y = v => h-padB - (v/max)*(h-padT-padB);
-  const xAt = i => invested.length>1 ? i*w/(invested.length-1) : w/2;
+  const xAt = i => padL + (invested.length>1 ? i*usableW/(invested.length-1) : usableW/2);
   const ptsInv = invested.map((v,i)=>[xAt(i), y(v)]);
   const ptsVal = value.map((v,i)=>[xAt(i), y(v)]);
   const pathInv = smoothPath(ptsInv);
   const pathVal = smoothPath(ptsVal);
+  const lastInv = ptsInv[ptsInv.length-1], lastVal = ptsVal[ptsVal.length-1];
   svg.innerHTML = `
-    ${gridLines(w,h,padT,padB)}
+    ${gridLines(w,h-padB,padT,0)}
     <path d="${pathInv}" fill="none" stroke="#a09d96" stroke-width="1.5" stroke-dasharray="4,4"/>
     <path d="${pathVal}" fill="none" stroke="#cc785c" stroke-width="2.5"/>
-    <circle cx="${ptsVal[ptsVal.length-1][0].toFixed(1)}" cy="${ptsVal[ptsVal.length-1][1].toFixed(1)}" r="4" fill="#cc785c"/>
+    <circle cx="${lastVal[0].toFixed(1)}" cy="${lastVal[1].toFixed(1)}" r="4" fill="#cc785c"/>
+    <circle cx="${lastInv[0].toFixed(1)}" cy="${lastInv[1].toFixed(1)}" r="3" fill="#a09d96"/>
+    ${endLabel(lastVal[0], lastVal[1], 'THB '+fmt(value[value.length-1]), lastVal[1] < lastInv[1])}
+    ${endLabel(lastInv[0], lastInv[1], 'THB '+fmt(invested[invested.length-1]), lastInv[1] <= lastVal[1])}
+    ${yAxisLabels(h-padB,padT,0,min,max)}
+    ${xAxisDateLabels(w,h,entries[0].time,entries[entries.length-1].time)}
   `;
 }
 
@@ -473,16 +507,18 @@ function renderMonthChart(){
   const keys = Object.keys(byMonth).sort();
   const vals = keys.map(k=>byMonth[k]);
   const max = Math.max(...vals) || 1;
-  const w=640,h=160,padT=10,padB=24;
-  const bw = w/keys.length;
+  const w=640,h=170,padT=10,padB=24,padL=64;
+  const usableW = w-padL;
+  const bw = usableW/keys.length;
   const bars = keys.map((k,i)=>{
     const bh = (vals[i]/max)*(h-padT-padB);
-    const x = i*bw + bw*0.2, bwd = bw*0.6;
+    const x = padL + i*bw + bw*0.2, bwd = bw*0.6;
     const label = k.slice(2).replace('-','/');
     return `<rect x="${x.toFixed(1)}" y="${(h-padB-bh).toFixed(1)}" width="${bwd.toFixed(1)}" height="${bh.toFixed(1)}" rx="3" fill="#cc785c"/>
+      <text x="${(x+bwd/2).toFixed(1)}" y="${(h-padB-bh-6).toFixed(1)}" fill="#cc785c" font-size="9" text-anchor="middle" font-family="JetBrains Mono">${fmt(vals[i])}</text>
       <text x="${(x+bwd/2).toFixed(1)}" y="${h-6}" fill="#a09d96" font-size="9" text-anchor="middle" font-family="Inter">${label}</text>`;
   }).join('');
-  svg.innerHTML = `${gridLines(w,h,padT,padB)}${bars}`;
+  svg.innerHTML = `${gridLines(w,h-padB,padT,0)}${bars}${yAxisLabels(h-padB,padT,0,0,max)}`;
 }
 
 function render(){
