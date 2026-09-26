@@ -1,0 +1,33 @@
+name: Sync Bitkub BTC purchases
+
+on:
+  schedule:
+    - cron: "0 * * * *"   # every hour
+  workflow_dispatch: {}     # lets you trigger it manually from the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Fetch latest orders from Bitkub
+        env:
+          BITKUB_API_KEY: ${{ secrets.BITKUB_API_KEY }}
+          BITKUB_API_SECRET: ${{ secrets.BITKUB_API_SECRET }}
+        run: node scripts/sync-bitkub.mjs
+
+      - name: Commit updated data
+        run: |
+          git config user.name "btc-dca-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/orders.json
+          git diff --cached --quiet || git commit -m "Sync BTC purchases"
+          git push
