@@ -9,7 +9,7 @@ import { readFile, writeFile, mkdir } from "node:fs/promises";
 
 const API_KEY = process.env.BITKUB_API_KEY;
 const API_SECRET = process.env.BITKUB_API_SECRET;
-const SYMBOL = process.env.BITKUB_SYMBOL || "thb_btc";
+const SYMBOL = process.env.BITKUB_SYMBOL || "btc_thb";
 const BASE_URL = "https://api.bitkub.com";
 const DATA_PATH = new URL("../data/orders.json", import.meta.url);
 
