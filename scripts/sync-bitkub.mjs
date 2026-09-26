@@ -61,6 +61,7 @@ async function fetchAllOrderHistory() {
     page += 1;
     if (page > 50) break;
   }
+    console.log("RAW SAMPLE:", JSON.stringify(all[0], null, 2));
   return all;
 }
 
