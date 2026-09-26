@@ -4,55 +4,94 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>BTC DCA Ledger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0B0E11; --panel:#12161C; --panel2:#171C24; --line:#242A33;
-    --ink:#E9EAEC; --ink-dim:#8B93A0; --gold:#F0B90B; --gold-dim:#8a6b0a;
-    --green:#3FBE85; --red:#E5484D;
+    --canvas:#faf9f5; --surface-card:#efe9de; --surface-cream-strong:#e8e0d2;
+    --surface-dark:#181715; --surface-dark-soft:#1f1e1b; --surface-dark-elevated:#252320;
+    --ink:#141413; --body:#3d3d3a; --muted:#6c6a64; --muted-soft:#8e8b82;
+    --hairline:#e6dfd8; --primary:#cc785c; --primary-active:#a9583e;
+    --on-dark:#faf9f5; --on-dark-soft:#a09d96;
+    --success:#5db872; --error:#c64545;
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;-webkit-font-smoothing:antialiased}
-  .num{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-  .wrap{max-width:960px;margin:0 auto;padding:28px 20px 60px}
-  header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:6px;flex-wrap:wrap}
-  h1{font-size:19px;font-weight:600;margin:0}
-  h1 span{color:var(--gold)}
-  .sub{color:var(--ink-dim);font-size:12.5px;margin:3px 0 22px}
-  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:20px}
-  .stat{background:var(--panel);padding:14px 16px}
-  .stat .l{color:var(--ink-dim);font-size:11.5px;margin-bottom:6px}
-  .stat .v{font-size:19px;font-weight:600}
-  .v.pos{color:var(--green)} .v.neg{color:var(--red)}
-  .grid{display:grid;grid-template-columns:300px 1fr;gap:16px}
-  @media (max-width:760px){.grid{grid-template-columns:1fr}}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
-  .card h2{font-size:12.5px;color:var(--ink-dim);margin:0 0 12px;font-weight:600}
-  input{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:9px 10px;font-size:13.5px;margin-bottom:8px}
-  .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  label{display:block;font-size:11px;color:var(--ink-dim);margin-bottom:3px}
-  button{background:var(--gold);color:#151200;border:none;border-radius:8px;font-weight:600;font-size:13px;padding:9px 14px;cursor:pointer;width:100%}
-  button.ghost{background:transparent;border:1px solid var(--line);color:var(--ink-dim);font-weight:500}
-  table{width:100%;border-collapse:collapse;font-size:12.5px}
-  th{text-align:right;color:var(--ink-dim);font-weight:500;font-size:11px;padding:0 8px 8px;border-bottom:1px solid var(--line)}
-  th:first-child,td:first-child{text-align:left}
-  td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:right}
+  body{
+    margin:0; background:var(--canvas); color:var(--ink);
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased; line-height:1.55;
+  }
+  .mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+  .serif{font-family:'Fraunces',Georgia,serif}
+  .wrap{max-width:1080px;margin:0 auto;padding:48px 24px 64px}
+  header h1{
+    font-family:'Fraunces',Georgia,serif; font-weight:400; font-size:36px;
+    letter-spacing:-0.5px; margin:0 0 6px; color:var(--ink);
+  }
+  header h1 em{color:var(--primary); font-style:normal}
+  .sub{color:var(--muted); font-size:14px}
+
+  .stats{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+    gap:1px; background:var(--hairline); border:1px solid var(--hairline);
+    border-radius:12px; overflow:hidden; margin:28px 0 24px;
+  }
+  .stat{background:var(--surface-card); padding:18px 18px}
+  .stat .l{color:var(--muted); font-size:12px; margin-bottom:8px}
+  .stat .v{font-size:20px; font-weight:500}
+  .stat .v2{font-size:13px; color:var(--muted-soft); margin-top:2px}
+  .stat .v.pos{color:var(--success)} .stat .v.neg{color:var(--error)}
+
+  .grid{display:grid; grid-template-columns:320px 1fr; gap:20px}
+  @media (max-width:800px){.grid{grid-template-columns:1fr}}
+
+  .card{background:var(--canvas); border:1px solid var(--hairline); border-radius:12px; padding:22px}
+  .card h2{font-size:13px; color:var(--muted); margin:0 0 14px; font-weight:500; letter-spacing:.2px}
+
+  input{
+    width:100%; background:var(--canvas); border:1px solid var(--hairline);
+    color:var(--ink); border-radius:8px; padding:10px 12px; font-size:14px;
+    font-family:inherit; margin-bottom:10px;
+  }
+  input:focus{outline:none; border-color:var(--primary)}
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  label{display:block; font-size:11px; color:var(--muted-soft); margin-bottom:4px}
+
+  button{
+    background:var(--primary); color:#fff; border:none; border-radius:8px;
+    font-weight:500; font-size:14px; padding:11px 16px; cursor:pointer; width:100%;
+  }
+  button:hover{background:var(--primary-active)}
+  button.ghost{background:var(--surface-card); color:var(--ink); font-weight:500}
+  .hint{margin-top:8px; font-size:11.5px; color:var(--muted-soft); line-height:1.5}
+
+  table{width:100%; border-collapse:collapse; font-size:13px}
+  th{text-align:right; color:var(--muted); font-weight:500; font-size:11px; padding:0 10px 10px; border-bottom:1px solid var(--hairline)}
+  th:first-child, td:first-child{text-align:left}
+  td{padding:10px; border-bottom:1px solid var(--hairline); text-align:right}
   tr:last-child td{border-bottom:none}
-  .del{color:var(--ink-dim);cursor:pointer;font-size:14px;padding:0 4px}
-  .del:hover{color:var(--red)}
-  .empty{color:var(--ink-dim);font-size:13px;text-align:center;padding:30px 10px}
-  svg{width:100%;height:110px;display:block}
-  .synced{color:var(--ink-dim);font-size:11.5px}
-  .pending{color:var(--gold);font-size:11px;margin-left:6px}
+  .del{color:var(--muted-soft); cursor:pointer; font-size:14px; padding:0 4px}
+  .del:hover{color:var(--error)}
+  .empty{color:var(--muted-soft); font-size:13px; text-align:center; padding:36px 10px}
+  .pending{color:var(--primary); font-size:10.5px; margin-left:6px}
+  .usd{color:var(--muted-soft); font-size:11.5px}
+
+  .chart-card{
+    margin-top:20px; background:var(--surface-dark); border-radius:12px;
+    padding:22px; color:var(--on-dark);
+  }
+  .chart-card h2{color:var(--on-dark-soft)}
+  .chart-legend{display:flex; gap:16px; font-size:11.5px; color:var(--on-dark-soft); margin-top:8px}
+  svg{width:100%; height:180px; display:block; overflow:visible}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <div>
-      <h1>BTC DCA <span>Ledger</span></h1>
-    </div>
+    <h1>BTC DCA <em>Ledger</em></h1>
+    <div class="sub" id="syncedLine">กำลังโหลดข้อมูล…</div>
   </header>
-  <div class="sub" id="syncedLine">กำลังโหลดข้อมูล…</div>
 
   <div class="stats" id="stats"></div>
 
@@ -69,13 +108,14 @@
           <div><label>เวลา</label><input id="mTime" type="datetime-local"></div>
         </div>
         <button id="addBtn">เพิ่ม</button>
-        <div style="margin-top:8px;font-size:11px;color:var(--ink-dim)">รายการนี้จะถูกแทนที่ด้วยข้อมูลจริงจาก Bitkub เมื่อ sync รอบถัดไปทำงาน</div>
+        <div class="hint">รายการนี้จะถูกแทนที่ด้วยข้อมูลจริงจาก Bitkub เมื่อ sync รอบถัดไปทำงาน</div>
       </div>
 
       <div class="card" style="margin-top:16px">
         <h2>ราคา BTC ปัจจุบัน (THB) — สำหรับ P&amp;L</h2>
         <input id="curPrice" type="number" step="any">
         <button class="ghost" id="saveCur">อัปเดต</button>
+        <div class="hint" id="fxLine"></div>
       </div>
     </div>
 
@@ -84,9 +124,18 @@
         <h2>ประวัติการซื้อ</h2>
         <div id="tableWrap"></div>
       </div>
-      <div class="card" style="margin-top:16px">
+
+      <div class="chart-card">
         <h2>ราคาที่ซื้อในแต่ละครั้ง</h2>
-        <svg id="chart" viewBox="0 0 600 110" preserveAspectRatio="none"></svg>
+        <svg id="chart" viewBox="0 0 640 180" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#cc785c" stop-opacity="0.35"/>
+              <stop offset="100%" stop-color="#cc785c" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="chart-legend"><span>● ราคาต่อ BTC (THB)</span></div>
       </div>
     </div>
   </div>
@@ -95,6 +144,7 @@
 <script>
 const LS_LOCAL = 'btc_dca_local_entries_v1';
 const LS_CUR = 'btc_dca_curprice_v1';
+const LS_FX = 'btc_dca_fx_thb_usd_v1';
 
 function loadLocal(){ try{ return JSON.parse(localStorage.getItem(LS_LOCAL)||'[]'); }catch(e){ return []; } }
 function saveLocal(list){ try{ localStorage.setItem(LS_LOCAL, JSON.stringify(list)); }catch(e){} }
@@ -104,15 +154,30 @@ function saveCur(v){ try{ localStorage.setItem(LS_CUR, String(v)); }catch(e){} }
 let synced = { entries: [], last_synced: null };
 let local = loadLocal();
 let curPrice = loadCur();
+let fxRate = null; // THB -> USD
 if(curPrice) document.getElementById('curPrice').value = curPrice;
 
 function fmt(n,d=0){ if(n===null||n===undefined||isNaN(n)) return '—'; return Number(n).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+function usd(thb){ if(fxRate==null || thb==null || isNaN(thb)) return ''; return '$'+fmt(thb*fxRate,2); }
+
+async function loadFx(){
+  try{
+    const cached = JSON.parse(localStorage.getItem(LS_FX)||'null');
+    if(cached && Date.now() - cached.t < 6*60*60*1000){ fxRate = cached.rate; return; }
+    const res = await fetch('https://api.frankfurter.dev/v1/latest?base=THB&symbols=USD');
+    const data = await res.json();
+    if(data && data.rates && data.rates.USD){
+      fxRate = data.rates.USD;
+      localStorage.setItem(LS_FX, JSON.stringify({rate: fxRate, t: Date.now()}));
+    }
+  }catch(e){ /* offline or blocked — THB-only fallback */ }
+}
 
 async function loadSynced(){
   try{
     const res = await fetch('./data/orders.json', {cache:'no-store'});
     if(res.ok) synced = await res.json();
-  }catch(e){ /* file may not exist yet on first deploy */ }
+  }catch(e){ }
   render();
 }
 
@@ -154,20 +219,24 @@ function renderStats(){
   const pnl = curVal!==null ? curVal-totalSpent : null;
 
   const cells = [
-    ['ลงทุนสะสม','THB '+fmt(totalSpent),''],
-    ['BTC สะสม',fmt(totalBtc,8),''],
-    ['ต้นทุนเฉลี่ย',avgCost?'THB '+fmt(avgCost):'—',''],
-    ['จำนวนครั้ง',entries.length,''],
-    ['มูลค่าปัจจุบัน',curVal!==null?'THB '+fmt(curVal):'—',''],
-    ['กำไร/ขาดทุน',pnl!==null?(pnl>=0?'+':'')+'THB '+fmt(pnl):'—',pnl!==null?(pnl>=0?'pos':'neg'):''],
+    ['ลงทุนสะสม', 'THB '+fmt(totalSpent), usd(totalSpent), ''],
+    ['BTC สะสม', fmt(totalBtc,8), '', ''],
+    ['ต้นทุนเฉลี่ย', avgCost?'THB '+fmt(avgCost):'—', avgCost?usd(avgCost):'', ''],
+    ['จำนวนครั้ง', entries.length, '', ''],
+    ['มูลค่าปัจจุบัน', curVal!==null?'THB '+fmt(curVal):'—', curVal!==null?usd(curVal):'', ''],
+    ['กำไร/ขาดทุน', pnl!==null?(pnl>=0?'+':'')+'THB '+fmt(pnl):'—', pnl!==null?usd(Math.abs(pnl)):'', pnl!==null?(pnl>=0?'pos':'neg'):''],
   ];
-  document.getElementById('stats').innerHTML = cells.map(([l,v,cls])=>
-    `<div class="stat"><div class="l">${l}</div><div class="v num ${cls}">${v}</div></div>`).join('');
+  document.getElementById('stats').innerHTML = cells.map(([l,v,v2,cls])=>
+    `<div class="stat"><div class="l">${l}</div><div class="v mono ${cls}">${v}</div>${v2?`<div class="v2 mono">${v2}</div>`:''}</div>`).join('');
 
   const syncedLine = document.getElementById('syncedLine');
   syncedLine.textContent = synced.last_synced
     ? 'ซิงก์ล่าสุดจาก Bitkub: ' + new Date(synced.last_synced).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'})
     : 'ยังไม่มีข้อมูล sync (รอ GitHub Actions รันรอบแรก)';
+
+  document.getElementById('fxLine').textContent = fxRate
+    ? `อัตราแลกเปลี่ยนอ้างอิง: 1 THB ≈ $${fxRate.toFixed(5)}`
+    : '';
 }
 
 function renderTable(){
@@ -177,10 +246,10 @@ function renderTable(){
   const sorted = [...entries].sort((a,b)=> new Date(b.time)-new Date(a.time));
   const rows = sorted.map(e => `
     <tr>
-      <td>${new Date(e.time).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'})}${e.id && String(e.id).startsWith('local-') ? '<span class="pending">รอ sync</span>' : ''}</td>
-      <td class="num">${fmt(e.spent)}</td>
-      <td class="num">${fmt(e.price)}</td>
-      <td class="num">${fmt(e.btc,8)}</td>
+      <td>${new Date(e.time).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'})}${String(e.id).startsWith('local-') ? '<span class="pending">รอ sync</span>' : ''}</td>
+      <td class="mono">${fmt(e.spent)}<div class="usd mono">${usd(e.spent)}</div></td>
+      <td class="mono">${fmt(e.price)}<div class="usd mono">${usd(e.price)}</div></td>
+      <td class="mono">${fmt(e.btc,8)}</td>
       <td>${String(e.id).startsWith('local-') ? `<span class="del" onclick="removeLocal('${e.id}')">✕</span>` : ''}</td>
     </tr>`).join('');
   wrap.innerHTML = `<table><thead><tr><th>เวลา</th><th>ใช้ (THB)</th><th>ราคา</th><th>ได้ (BTC)</th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
@@ -189,24 +258,54 @@ function renderTable(){
 function renderChart(){
   const svg = document.getElementById('chart');
   const entries = allEntries();
-  if(!entries.length){ svg.innerHTML=''; return; }
   const prices = entries.map(e=>e.price).filter(p=>p!=null);
   if(!prices.length){ svg.innerHTML=''; return; }
   const min = Math.min(...prices), max = Math.max(...prices);
   const range = (max-min) || 1;
-  const w=600,h=110,pad=8;
+  const w=640,h=180,padT=14,padB=14;
   const pts = prices.map((p,i)=>{
-    const x = prices.length>1 ? pad + i*(w-2*pad)/(prices.length-1) : w/2;
-    const y = h-pad - ((p-min)/range)*(h-2*pad);
+    const x = prices.length>1 ? i*w/(prices.length-1) : w/2;
+    const y = h-padB - ((p-min)/range)*(h-padT-padB);
     return [x,y];
   });
-  const path = pts.map((p,i)=> (i===0?'M':'L')+p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
-  const dots = pts.map(p=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="2.5" fill="#F0B90B"/>`).join('');
-  svg.innerHTML = `<path d="${path}" fill="none" stroke="#F0B90B" stroke-width="1.5" opacity="0.85"/>${dots}`;
+  // smooth path via quadratic mid-points
+  let path = `M${pts[0][0].toFixed(1)},${pts[0][1].toFixed(1)}`;
+  for(let i=1;i<pts.length;i++){
+    const [x0,y0]=pts[i-1], [x1,y1]=pts[i];
+    const mx=(x0+x1)/2;
+    path += ` Q${x0.toFixed(1)},${y0.toFixed(1)} ${mx.toFixed(1)},${((y0+y1)/2).toFixed(1)}`;
+  }
+  path += ` T${pts[pts.length-1][0].toFixed(1)},${pts[pts.length-1][1].toFixed(1)}`;
+  const areaPath = `${path} L${pts[pts.length-1][0].toFixed(1)},${h} L0,${h} Z`;
+
+  const gridLines = [0,0.25,0.5,0.75,1].map(f=>{
+    const y = padT + f*(h-padT-padB);
+    return `<line x1="0" y1="${y.toFixed(1)}" x2="${w}" y2="${y.toFixed(1)}" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>`;
+  }).join('');
+
+  const dots = pts.map((p,i)=> i===pts.length-1
+    ? `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="4" fill="#cc785c"/>`
+    : `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="2" fill="#cc785c" opacity="0.7"/>`
+  ).join('');
+
+  svg.innerHTML = `
+    <defs><linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#cc785c" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#cc785c" stop-opacity="0"/>
+    </linearGradient></defs>
+    ${gridLines}
+    <path d="${areaPath}" fill="url(#areaFill)" stroke="none"/>
+    <path d="${path}" fill="none" stroke="#cc785c" stroke-width="2"/>
+    ${dots}
+  `;
 }
 
 function render(){ renderStats(); renderTable(); renderChart(); }
-loadSynced();
+
+(async function init(){
+  await loadFx();
+  await loadSynced();
+})();
 </script>
 </body>
 </html>
