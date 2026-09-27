@@ -9,107 +9,144 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#05070b; --bg-elev:#0b0e15; --surface:#10141c; --surface-2:#161b26;
-    --border:rgba(255,255,255,.08); --border-strong:rgba(255,255,255,.15);
-    --ink:#eef1f5; --body:#c7ccd4; --muted:#8891a0; --muted-soft:#5c6472;
-    --accent:#4fd8c4; --accent-2:#8b7cf6; --amber:#f0b429; --slate:#64748b;
-    --success:#3ddc97; --error:#ff5c72;
+    --bg0:#05070b; --bg1:#0d1220; --bg2:#0a1418;
+    --glass:rgba(255,255,255,.05); --glass-strong:rgba(255,255,255,.08);
+    --border:rgba(255,255,255,.10); --border-strong:rgba(255,255,255,.18);
+    --ink:#f1f3f6; --body:#c7ccd4; --muted:#8891a0; --muted-soft:#5c6472;
+    --accent:#4fd8c4; --accent-2:#8b7cf6; --amber:#f0b429; --slate:#7c8698;
+    --success:#3ddc97; --error:#ff5c72; --blur:22px;
   }
   :root[data-theme="light"]{
-    --bg:#f6f7f9; --bg-elev:#ffffff; --surface:#ffffff; --surface-2:#f1f3f6;
-    --border:#e4e7ec; --border-strong:#d7dbe2;
+    --bg0:#eef1f6; --bg1:#f7f4fb; --bg2:#eafaf6;
+    --glass:rgba(255,255,255,.55); --glass-strong:rgba(255,255,255,.75);
+    --border:rgba(20,20,30,.08); --border-strong:rgba(20,20,30,.14);
     --ink:#12151a; --body:#3d4451; --muted:#6b7280; --muted-soft:#9aa1ac;
     --accent:#0d9c92; --accent-2:#6c5ce0; --amber:#c98a12; --slate:#64748b;
     --success:#16a34a; --error:#dc2626;
   }
   *{box-sizing:border-box}
+  html,body{height:100%}
   body{
-    margin:0; background:var(--bg); color:var(--ink);
-    font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    -webkit-font-smoothing:antialiased; line-height:1.55; transition:background .2s,color .2s;
+    margin:0; color:var(--ink); font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased; line-height:1.55;
+    background:
+      radial-gradient(circle at 15% 8%, rgba(79,216,196,.22), transparent 45%),
+      radial-gradient(circle at 85% 18%, rgba(139,124,246,.20), transparent 42%),
+      radial-gradient(circle at 50% 90%, rgba(240,180,41,.10), transparent 40%),
+      linear-gradient(180deg, var(--bg0), var(--bg1) 55%, var(--bg2));
+    background-attachment:fixed;
+    transition:background .2s,color .2s;
   }
   .mono{font-family:'JetBrains Mono',ui-monospace,monospace}
-  .wrap{max-width:900px; margin:0 auto; padding:40px 20px 80px}
+  .wrap{max-width:820px; margin:0 auto; padding:36px 18px 120px}
 
-  header{display:flex; justify-content:space-between; align-items:center; margin-bottom:36px}
-  .brand{font-size:12px; letter-spacing:2px; color:var(--muted-soft); font-weight:500}
-  .theme-toggle{
-    background:var(--surface); border:1px solid var(--border); color:var(--muted);
-    width:36px; height:36px; border-radius:9999px; cursor:pointer; font-size:15px;
+  .glass{
+    background:var(--glass); backdrop-filter:blur(var(--blur)) saturate(150%); -webkit-backdrop-filter:blur(var(--blur)) saturate(150%);
+    border:1px solid var(--border); border-radius:20px;
+  }
+
+  header{display:flex; justify-content:space-between; align-items:center; margin-bottom:28px}
+  .brand{font-size:12px; letter-spacing:2px; color:var(--muted-soft); font-weight:600}
+  .icon-round{
+    background:var(--glass); backdrop-filter:blur(var(--blur)); border:1px solid var(--border); color:var(--body);
+    width:36px; height:36px; border-radius:9999px; cursor:pointer; font-size:14px;
     display:flex; align-items:center; justify-content:center;
   }
 
-  .eyebrow{font-size:11.5px; color:var(--muted-soft); letter-spacing:1px; margin-bottom:10px; text-transform:uppercase}
-  .hero-num{font-family:'JetBrains Mono',monospace; font-weight:600; font-size:46px; letter-spacing:-1px; color:var(--ink)}
+  .hero{padding:26px 24px; margin-bottom:22px}
+  .eyebrow{font-size:11px; color:var(--muted-soft); letter-spacing:1.2px; margin-bottom:10px; text-transform:uppercase}
+  .hero-num{font-family:'JetBrains Mono',monospace; font-weight:600; font-size:42px; letter-spacing:-1px}
   .hero-num .accent{color:var(--accent)}
   .hero-sub{color:var(--muted); font-size:13px; margin-top:6px}
-  .updated{color:var(--muted-soft); font-size:11.5px; margin-top:4px}
+  .updated{color:var(--muted-soft); font-size:11px; margin-top:4px}
 
-  .divider{height:1px; background:var(--border); margin:32px 0}
+  .panel{padding:22px; margin-bottom:16px}
+  .panel h2, .panel h3{font-size:13px; font-weight:600; margin:0 0 14px; letter-spacing:.2px; color:var(--body)}
+  .section-head{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:14px}
+  .section-head h2{margin:0}
+  .n{color:var(--muted-soft); font-weight:400; font-size:12px}
 
-  .allocation{display:flex; align-items:center; gap:32px; flex-wrap:wrap}
-  .donut{flex:0 0 auto}
-  .alloc-list{flex:1; min-width:220px; display:flex; flex-direction:column; gap:9px}
+  .allocation{display:flex; align-items:center; gap:28px; flex-wrap:wrap}
+  .alloc-list{flex:1; min-width:200px; display:flex; flex-direction:column; gap:9px}
   .alloc-row{display:flex; align-items:center; gap:10px; font-size:13px}
   .alloc-row .dot{width:8px; height:8px; border-radius:50%; flex-shrink:0}
   .alloc-row .name{flex:1; color:var(--body)}
   .alloc-row .pct{color:var(--muted-soft); width:44px; text-align:right}
-  .alloc-row .val{width:110px; text-align:right; color:var(--ink)}
+  .alloc-row .val{width:110px; text-align:right}
 
-  .section-head{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:14px}
-  .section-head h2{font-size:14px; font-weight:600; margin:0; letter-spacing:.2px}
-  .section-head .n{color:var(--muted-soft); font-weight:400; font-size:12px}
-
-  .account-card{
-    display:grid; grid-template-columns:1fr auto auto; gap:14px; align-items:center;
-    padding:14px 16px; border:1px solid var(--border); border-radius:10px; margin-bottom:8px;
-    background:var(--surface);
-  }
+  .acc-card{padding:16px 18px; margin-bottom:10px}
+  .acc-top{display:grid; grid-template-columns:1fr auto auto; gap:12px; align-items:center}
+  .acc-name-row{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
   .acc-name{font-size:14px; font-weight:600}
-  .acc-tag{font-size:10px; color:var(--muted-soft); background:var(--surface-2); padding:2px 8px; border-radius:9999px; margin-left:8px; letter-spacing:.3px}
+  .acc-tag{font-size:10px; color:var(--muted-soft); background:var(--glass-strong); padding:2px 9px; border-radius:9999px; letter-spacing:.3px}
   .acc-meta{font-size:11px; color:var(--muted-soft); margin-top:3px}
-  .acc-val{font-size:14px; text-align:right; color:var(--ink)}
-  .acc-val .usd{display:block; font-size:11px; color:var(--muted-soft)}
+  .acc-val{font-size:14px; text-align:right}
+  .acc-val .sub{display:block; font-size:11px; color:var(--muted-soft)}
   .acc-actions{display:flex; gap:6px}
-  .icon-btn{background:none; border:none; color:var(--muted-soft); cursor:pointer; font-size:14px; width:auto; padding:2px 5px}
-  .icon-btn:hover{color:var(--error)}
+  .icon-btn{background:none; border:none; color:var(--muted-soft); cursor:pointer; font-size:14px; padding:2px 5px}
+  .icon-btn:hover{color:var(--accent)}
+  .icon-btn.danger:hover{color:var(--error)}
+  .acc-expand{margin-top:14px; padding-top:14px; border-top:1px solid var(--border); display:none}
+  .acc-expand.open{display:block}
 
-  form.inline{display:grid; grid-template-columns:2fr 1fr 1fr 1fr auto; gap:8px; margin-top:16px}
-  @media (max-width:680px){ form.inline{grid-template-columns:1fr 1fr}; .account-card{grid-template-columns:1fr auto} }
+  form.inline{display:grid; grid-template-columns:2fr 1fr 1fr 1fr auto; gap:8px}
+  form.inline.entry{grid-template-columns:1fr 1fr 1fr 1.2fr auto}
+  @media (max-width:680px){ form.inline, form.inline.entry{grid-template-columns:1fr 1fr}; .acc-top{grid-template-columns:1fr auto} }
   input, select{
-    width:100%; background:var(--bg-elev); border:1px solid var(--border); color:var(--ink);
-    border-radius:8px; padding:9px 11px; font-size:13.5px; font-family:inherit;
+    width:100%; background:var(--glass-strong); border:1px solid var(--border); color:var(--ink);
+    border-radius:9px; padding:9px 11px; font-size:13px; font-family:inherit;
   }
   input:focus, select:focus{outline:none; border-color:var(--accent)}
-  button{background:var(--accent); color:#04140f; border:none; border-radius:8px; font-weight:600; font-size:13.5px; padding:9px 16px; cursor:pointer}
-  button.ghost{background:var(--surface-2); color:var(--ink)}
-  button.text{background:none; color:var(--muted); padding:9px 4px}
-  .toolbar{display:flex; gap:10px; margin-top:14px}
+  button{background:var(--accent); color:#04140f; border:none; border-radius:9px; font-weight:600; font-size:13px; padding:9px 16px; cursor:pointer}
+  button.ghost{background:var(--glass-strong); color:var(--ink); border:1px solid var(--border)}
+  button.text{background:none; color:var(--muted); padding:9px 4px; border:none}
+  .toolbar{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap}
 
-  .btc-detail{margin-top:14px}
-  .stat-strip{display:flex; gap:26px; flex-wrap:wrap; margin-bottom:18px}
-  .stat-strip .item .l{font-size:10.5px; color:var(--muted-soft); margin-bottom:4px; text-transform:uppercase; letter-spacing:.4px}
-  .stat-strip .item .v{font-size:15px; font-weight:600}
+  .stat-strip{display:flex; gap:24px; flex-wrap:wrap; margin:14px 0}
+  .stat-strip .item .l{font-size:10px; color:var(--muted-soft); margin-bottom:4px; text-transform:uppercase; letter-spacing:.4px}
+  .stat-strip .item .v{font-size:14.5px; font-weight:600}
   .stat-strip .item .v.pos{color:var(--success)} .stat-strip .item .v.neg{color:var(--error)}
 
-  .panel{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; margin-bottom:14px}
-  .panel h3{color:var(--muted); font-size:12px; font-weight:600; margin:0 0 12px; letter-spacing:.2px}
   svg.chart{width:100%; display:block; aspect-ratio:640/200}
   .legend{display:flex; gap:16px; font-size:11px; color:var(--muted); margin-top:8px}
   .legend span{display:flex; align-items:center; gap:6px}
   .dot{width:8px; height:8px; border-radius:50%; display:inline-block}
 
   table{width:100%; border-collapse:collapse; font-size:12.5px}
-  th{text-align:right; color:var(--muted-soft); font-weight:500; font-size:10.5px; padding:0 8px 8px; border-bottom:1px solid var(--border); text-transform:uppercase; letter-spacing:.3px}
+  th{text-align:right; color:var(--muted-soft); font-weight:500; font-size:10px; padding:0 6px 8px; border-bottom:1px solid var(--border); text-transform:uppercase; letter-spacing:.3px}
   th:first-child, td:first-child{text-align:left}
-  td{padding:8px; border-bottom:1px solid var(--border); text-align:right; color:var(--body)}
+  td{padding:8px 6px; border-bottom:1px solid var(--border); text-align:right; color:var(--body)}
   tr:last-child td{border-bottom:none}
-  .table-wrap{max-height:340px; overflow-y:auto}
-  .pending{color:var(--accent); font-size:10px; margin-left:6px}
-
+  .table-wrap{max-height:320px; overflow-y:auto; margin-top:12px}
+  .tag-chip{
+    display:inline-block; font-size:10px; padding:2px 8px; border-radius:9999px;
+    background:rgba(139,124,246,.18); color:var(--accent-2); cursor:pointer;
+  }
   .empty{color:var(--muted-soft); font-size:13px; padding:16px 0}
-  .hint{font-size:11.5px; color:var(--muted-soft); margin-top:6px}
-  .toggle{font-size:12px; color:var(--accent); cursor:pointer; user-select:none}
+  .hint{font-size:11.5px; color:var(--muted-soft); margin-top:8px}
+
+  /* bottom nav */
+  .navbar{
+    position:fixed; left:50%; bottom:18px; transform:translateX(-50%); z-index:50;
+    display:flex; gap:6px; padding:8px; border-radius:9999px;
+    background:var(--glass-strong); backdrop-filter:blur(var(--blur)) saturate(160%); -webkit-backdrop-filter:blur(var(--blur)) saturate(160%);
+    border:1px solid var(--border-strong); box-shadow:0 8px 30px rgba(0,0,0,.25);
+  }
+  .navbtn{
+    width:52px; height:44px; border-radius:9999px; border:none; background:transparent; color:var(--muted);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; cursor:pointer; font-size:17px;
+    padding:0;
+  }
+  .navbtn .lbl{font-size:9px; font-weight:500}
+  .navbtn.active{background:var(--accent); color:#04140f}
+
+  .view{display:none}
+  .view.active{display:block}
+
+  .tag-group{margin-bottom:18px}
+  .tag-group-head{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px}
+  .tag-group-head .t{font-size:13.5px; font-weight:600}
+  .tag-group-head .v{font-size:12.5px; color:var(--muted-soft)}
 </style>
 </head>
 <body>
@@ -117,125 +154,204 @@
 
   <header>
     <div class="brand">PORTFOLIO</div>
-    <button class="theme-toggle" id="themeToggle">🌙</button>
   </header>
 
-  <div class="eyebrow">ภาพรวมสินทรัพย์</div>
-  <div class="hero-num" id="netWorth">THB —</div>
-  <div class="hero-sub" id="netWorthUsd"></div>
-  <div class="updated" id="updatedLine"></div>
+  <!-- ===== HOME ===== -->
+  <div class="view active" id="view-home">
+    <div class="glass hero">
+      <div class="eyebrow">ภาพรวมสินทรัพย์</div>
+      <div class="hero-num" id="netWorth">THB —</div>
+      <div class="hero-sub" id="netWorthUsd"></div>
+      <div class="updated" id="updatedLine"></div>
+    </div>
 
-  <div class="divider"></div>
-
-  <div class="section-head"><h2>สัดส่วนสินทรัพย์</h2></div>
-  <div class="allocation">
-    <svg class="donut" id="donut" width="150" height="150" viewBox="0 0 150 150"></svg>
-    <div class="alloc-list" id="allocList"></div>
-  </div>
-
-  <div class="divider"></div>
-
-  <div class="section-head">
-    <h2>บัญชีทั้งหมด</h2>
-    <span class="n" id="accCount"></span>
-  </div>
-  <div id="accountsList"></div>
-
-  <form class="inline" id="addAccountForm">
-    <input id="accName" placeholder="ชื่อบัญชี เช่น Dime — หุ้น US" required>
-    <select id="accType">
-      <option value="us-stock">หุ้น US</option>
-      <option value="th-stock">หุ้นไทย</option>
-      <option value="cash">เงินสด</option>
-      <option value="crypto">คริปโต (อื่น)</option>
-      <option value="other">อื่นๆ</option>
-    </select>
-    <select id="accCurrency">
-      <option value="THB">THB</option>
-      <option value="USD">USD</option>
-    </select>
-    <input id="accValue" type="number" step="any" placeholder="มูลค่า" required>
-    <button type="submit">เพิ่ม</button>
-  </form>
-  <div class="hint">บัญชีที่กรอกมือจะเก็บไว้ในเบราว์เซอร์นี้เท่านั้น — อัปเดตมูลค่าเองเวลาราคาหุ้นเปลี่ยน แล้วอย่าลืม Export สำรองไว้เป็นระยะ</div>
-  <div class="toolbar">
-    <button class="text" id="exportBtn">⬇ Export ข้อมูลบัญชี (JSON)</button>
-    <button class="text" id="importBtn">⬆ Import</button>
-    <input type="file" id="importFile" accept="application/json" style="display:none">
-  </div>
-
-  <div class="divider"></div>
-
-  <div class="section-head">
-    <h2>BTC DCA (Bitkub) <span class="acc-tag">sync อัตโนมัติ</span></h2>
-    <span class="toggle" id="btcToggle">ซ่อนรายละเอียด</span>
-  </div>
-  <div class="btc-detail" id="btcDetail">
-    <div class="stat-strip" id="btcStrip"></div>
-
-    <div class="panel">
-      <h3>มูลค่าพอร์ต: เงินลงทุน vs มูลค่าปัจจุบัน</h3>
-      <svg class="chart" id="portfolioChart" viewBox="0 0 640 200" preserveAspectRatio="none"></svg>
-      <div class="legend">
-        <span><i class="dot" style="background:var(--muted-soft)"></i>เงินลงทุนสะสม</span>
-        <span><i class="dot" style="background:var(--accent)"></i>มูลค่าปัจจุบัน</span>
+    <div class="glass panel">
+      <div class="section-head"><h2>สัดส่วนสินทรัพย์</h2></div>
+      <div class="allocation">
+        <svg width="140" height="140" viewBox="0 0 140 140" id="donut"></svg>
+        <div class="alloc-list" id="allocList"></div>
       </div>
-      <div class="hint" id="portfolioNote"></div>
     </div>
 
-    <div class="panel">
-      <h3>ราคาที่ซื้อในแต่ละครั้ง <span style="color:var(--accent-2)">— เส้นประ = ต้นทุนเฉลี่ย</span></h3>
-      <svg class="chart" id="priceChart" viewBox="0 0 640 200" preserveAspectRatio="none"></svg>
+    <div class="section-head" style="margin-top:22px">
+      <h2 style="font-size:14px">บัญชีคริปโต</h2>
+      <button class="text" id="addCryptoBtn">+ เพิ่มบัญชี</button>
     </div>
+    <div id="cryptoAccountsList"></div>
 
-    <div class="panel">
-      <div class="section-head" style="margin-bottom:10px">
-        <h3 style="margin:0">ประวัติการซื้อทีละครั้ง</h3>
-        <span class="toggle" id="tableToggle">แสดงตาราง</span>
-      </div>
-      <div class="table-wrap" id="tableWrap" style="display:none"></div>
+    <div class="section-head" style="margin-top:22px">
+      <h2 style="font-size:14px">บัญชีอื่นๆ</h2>
+    </div>
+    <div id="otherAccountsList"></div>
+
+    <form class="glass panel inline" id="addAccountForm" style="margin-top:14px">
+      <input id="accName" placeholder="ชื่อบัญชี เช่น Dime — หุ้น US" required>
+      <select id="accType">
+        <option value="us-stock">หุ้น US</option>
+        <option value="th-stock">หุ้นไทย</option>
+        <option value="cash">เงินสด</option>
+        <option value="other">อื่นๆ</option>
+      </select>
+      <select id="accCurrency"><option value="THB">THB</option><option value="USD">USD</option></select>
+      <input id="accValue" type="number" step="any" placeholder="มูลค่า" required>
+      <button type="submit">เพิ่ม</button>
+    </form>
+  </div>
+
+  <!-- ===== TAGS ===== -->
+  <div class="view" id="view-tags">
+    <div class="glass panel">
+      <div class="section-head"><h2>จัดการแท็ก</h2></div>
+      <form class="inline" id="addTagForm" style="grid-template-columns:1fr auto">
+        <input id="newTagName" placeholder="ชื่อแท็กใหม่ เช่น ถือยาว, เทรด, ของขวัญ" required>
+        <button type="submit">สร้างแท็ก</button>
+      </form>
+      <div id="tagChipsWrap" style="margin-top:14px; display:flex; flex-wrap:wrap; gap:8px"></div>
+    </div>
+    <div class="glass panel">
+      <div class="section-head"><h2>รายการตามแท็ก</h2></div>
+      <div id="tagsWrap"></div>
     </div>
   </div>
 
+  <!-- ===== SETTINGS ===== -->
+  <div class="view" id="view-settings">
+    <div class="glass panel">
+      <h2>ธีม &amp; ภาษา</h2>
+      <div class="toolbar">
+        <button class="ghost" id="themeToggle">🌙 สลับธีม</button>
+        <button class="ghost" id="langToggleBtn">🌐 EN / TH</button>
+      </div>
+    </div>
+    <div class="glass panel">
+      <h2>ข้อมูลบัญชี</h2>
+      <div class="hint">บัญชีและรายการที่กรอกมือจะเก็บไว้ในเบราว์เซอร์นี้เท่านั้น — Export สำรองไว้เป็นระยะ</div>
+      <div class="toolbar">
+        <button class="text" id="exportBtn">⬇ Export ทั้งหมด (JSON)</button>
+        <button class="text" id="importBtn">⬆ Import</button>
+        <input type="file" id="importFile" accept="application/json" style="display:none">
+      </div>
+    </div>
+  </div>
+
+  <datalist id="tagOptions"></datalist>
+</div>
+
+<div class="navbar" id="navbar">
+  <button class="navbtn active" data-view="home">🏠<span class="lbl">หน้าแรก</span></button>
+  <button class="navbtn" data-view="tags">🏷️<span class="lbl">แท็ก</span></button>
+  <button class="navbtn" data-view="settings">⚙️<span class="lbl">ตั้งค่า</span></button>
 </div>
 
 <script>
 const LS_ACCOUNTS = 'net_worth_manual_accounts_v1';
+const LS_CRYPTO_ACCOUNTS = 'net_worth_crypto_accounts_v1';
 const LS_LOCAL_BTC = 'btc_dca_local_entries_v1';
 const LS_CUR = 'btc_dca_curprice_v1';
 const LS_FX = 'btc_dca_fx_thb_usd_v1';
 const LS_TICKER = 'btc_dca_ticker_v1';
 const LS_THEME = 'net_worth_theme_v1';
+const LS_TAG_OVERRIDES = 'net_worth_tag_overrides_v1';
+const LS_TAGS = 'net_worth_tags_v1';
+const LS_ENTRIES_PREFIX = 'net_worth_entries_';
 
 function loadJSON(key, fallback){ try{ return JSON.parse(localStorage.getItem(key)) ?? fallback; }catch(e){ return fallback; } }
 function saveJSON(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
 function fmt(n,d=0){ if(n==null||isNaN(n)) return '—'; return Number(n).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+function uid(p){ return p+'-'+Date.now()+'-'+Math.random().toString(36).slice(2,7); }
 
 // ---- theme ----
 (function initTheme(){
   const saved = localStorage.getItem(LS_THEME) || 'dark';
   document.documentElement.setAttribute('data-theme', saved);
-  document.getElementById('themeToggle').textContent = saved === 'dark' ? '🌙' : '☀️';
 })();
 document.getElementById('themeToggle').onclick = () => {
-  const cur = document.documentElement.getAttribute('data-theme');
-  const next = cur === 'dark' ? 'light' : 'dark';
+  const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', next);
   localStorage.setItem(LS_THEME, next);
-  document.getElementById('themeToggle').textContent = next === 'dark' ? '🌙' : '☀️';
   render();
 };
+document.getElementById('langToggleBtn').onclick = () => alert('ตอนนี้ตัวเลือกภาษาปิดไว้ชั่วคราวในเวอร์ชันนี้ — ระบบยังเป็นภาษาไทยเป็นหลัก');
 
+// ---- nav ----
+document.getElementById('navbar').addEventListener('click', e=>{
+  const btn = e.target.closest('.navbtn'); if(!btn) return;
+  document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active', b===btn));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+btn.dataset.view).classList.add('active');
+  if(btn.dataset.view === 'tags') renderTags();
+});
+
+// ---- state ----
 let synced = { entries: [] };
-let localBtc = loadJSON(LS_LOCAL_BTC, []);
+let localBtcLegacy = loadJSON(LS_LOCAL_BTC, []); // legacy quick-add for the bitkub account
 let curPrice = parseFloat(localStorage.getItem(LS_CUR)) || null;
 let livePrice = null, fxRate = null;
 let manualAccounts = loadJSON(LS_ACCOUNTS, []);
+let cryptoAccounts = loadJSON(LS_CRYPTO_ACCOUNTS, [{id:'bitkub', name:'BTC (Bitkub)', source:'auto'}]);
+let tagOverrides = loadJSON(LS_TAG_OVERRIDES, {});
+let tagRegistry = loadJSON(LS_TAGS, []);
+function saveTagRegistry(){ saveJSON(LS_TAGS, tagRegistry); }
+let openAccounts = new Set();
 
 function usdToThb(v){ return fxRate ? v/fxRate : null; }
 function thbToUsd(v){ return fxRate ? v*fxRate : null; }
-function btcEntries(){ return [...synced.entries, ...localBtc].sort((a,b)=>new Date(a.time)-new Date(b.time)); }
 function effectivePrice(){ return curPrice || livePrice; }
+function saveCryptoAccounts(){ saveJSON(LS_CRYPTO_ACCOUNTS, cryptoAccounts); }
+function saveTagOverrides(){ saveJSON(LS_TAG_OVERRIDES, tagOverrides); }
+
+function accountEntries(acc){
+  let entries;
+  if(acc.source === 'auto'){
+    entries = [...synced.entries, ...localBtcLegacy].map(e => ({...e, tag: tagOverrides[e.id] ?? e.tag ?? ''}));
+  } else {
+    entries = loadJSON(LS_ENTRIES_PREFIX+acc.id, []);
+  }
+  return entries.sort((a,b)=>new Date(a.time)-new Date(b.time));
+}
+function saveManualEntries(accId, list){ saveJSON(LS_ENTRIES_PREFIX+accId, list); }
+function setEntryTag(acc, entryId, tag){
+  if(acc.source === 'auto'){ tagOverrides[entryId] = tag; saveTagOverrides(); }
+  else {
+    const list = loadJSON(LS_ENTRIES_PREFIX+acc.id, []);
+    const e = list.find(x=>x.id===entryId); if(e){ e.tag = tag; saveManualEntries(acc.id, list); }
+  }
+}
+function allTagsUsed(){
+  const set = new Set(tagRegistry);
+  cryptoAccounts.forEach(acc => accountEntries(acc).forEach(e => { if(e.tag) set.add(e.tag); }));
+  return [...set].sort((a,b)=>a.localeCompare(b));
+}
+function renameTagEverywhere(oldTag, newTag){
+  tagRegistry = tagRegistry.map(t => t===oldTag ? newTag : t);
+  saveTagRegistry();
+  Object.keys(tagOverrides).forEach(k => { if(tagOverrides[k]===oldTag) tagOverrides[k]=newTag; });
+  saveTagOverrides();
+  cryptoAccounts.filter(a=>a.source==='manual').forEach(a=>{
+    const list = loadJSON(LS_ENTRIES_PREFIX+a.id, []);
+    let changed = false;
+    list.forEach(e => { if(e.tag===oldTag){ e.tag=newTag; changed=true; } });
+    if(changed) saveManualEntries(a.id, list);
+  });
+}
+function deleteTagEverywhere(tag){
+  tagRegistry = tagRegistry.filter(t=>t!==tag);
+  saveTagRegistry();
+  Object.keys(tagOverrides).forEach(k => { if(tagOverrides[k]===tag) tagOverrides[k]=''; });
+  saveTagOverrides();
+  cryptoAccounts.filter(a=>a.source==='manual').forEach(a=>{
+    const list = loadJSON(LS_ENTRIES_PREFIX+a.id, []);
+    let changed = false;
+    list.forEach(e => { if(e.tag===tag){ e.tag=''; changed=true; } });
+    if(changed) saveManualEntries(a.id, list);
+  });
+}
+function createTag(name){
+  if(!tagRegistry.includes(name)){ tagRegistry.push(name); saveTagRegistry(); }
+}
+function refreshTagDatalist(){
+  document.getElementById('tagOptions').innerHTML = allTagsUsed().map(t=>`<option value="${t}">`).join('');
+}
 
 async function loadFx(){
   try{
@@ -260,9 +376,9 @@ async function loadSynced(){
   try{ const res = await fetch('./data/orders.json', {cache:'no-store'}); if(res.ok) synced = await res.json(); }catch(e){}
 }
 
+// ---- manual asset accounts (stocks/cash/other) ----
 function accountValueThb(acc){ return acc.currency === 'USD' ? (usdToThb(acc.value) ?? acc.value) : acc.value; }
 function saveAccounts(){ saveJSON(LS_ACCOUNTS, manualAccounts); }
-
 document.getElementById('addAccountForm').addEventListener('submit', e=>{
   e.preventDefault();
   const name = document.getElementById('accName').value.trim();
@@ -270,12 +386,9 @@ document.getElementById('addAccountForm').addEventListener('submit', e=>{
   const currency = document.getElementById('accCurrency').value;
   const value = parseFloat(document.getElementById('accValue').value);
   if(!name || isNaN(value)) return;
-  manualAccounts.push({id:'acc-'+Date.now(), name, type, currency, value, updated:new Date().toISOString()});
-  saveAccounts();
-  e.target.reset();
-  render();
+  manualAccounts.push({id:uid('acc'), name, type, currency, value, updated:new Date().toISOString()});
+  saveAccounts(); e.target.reset(); render();
 });
-
 function removeAccount(id){ manualAccounts = manualAccounts.filter(a=>a.id!==id); saveAccounts(); render(); }
 function editAccountValue(id){
   const acc = manualAccounts.find(a=>a.id===id); if(!acc) return;
@@ -286,126 +399,178 @@ function editAccountValue(id){
   saveAccounts(); render();
 }
 
+// ---- crypto accounts CRUD ----
+document.getElementById('addCryptoBtn').onclick = () => {
+  const name = prompt('ชื่อบัญชีคริปโตใหม่ เช่น "Maxbit" หรือ "Cold wallet"');
+  if(!name) return;
+  cryptoAccounts.push({id:uid('crypto'), name, source:'manual'});
+  saveCryptoAccounts(); render();
+};
+function renameCryptoAccount(id){
+  const acc = cryptoAccounts.find(a=>a.id===id); if(!acc) return;
+  const name = prompt('เปลี่ยนชื่อบัญชี', acc.name); if(!name) return;
+  acc.name = name; saveCryptoAccounts(); render();
+}
+function deleteCryptoAccount(id){
+  const acc = cryptoAccounts.find(a=>a.id===id); if(!acc || acc.source==='auto') return;
+  if(!confirm(`ลบบัญชี "${acc.name}" และรายการทั้งหมดในนั้น?`)) return;
+  cryptoAccounts = cryptoAccounts.filter(a=>a.id!==id);
+  localStorage.removeItem(LS_ENTRIES_PREFIX+id);
+  saveCryptoAccounts(); render();
+}
+function toggleAccountOpen(id){
+  if(openAccounts.has(id)) openAccounts.delete(id); else openAccounts.add(id);
+  render();
+}
+function editEntryTag(accId, entryId, currentTag){
+  const acc = cryptoAccounts.find(a=>a.id===accId); if(!acc) return;
+  const tag = prompt('ใส่แท็กสำหรับรายการนี้ (เว้นว่างเพื่อลบแท็ก)', currentTag||'');
+  if(tag===null) return;
+  const trimmed = tag.trim();
+  if(trimmed) createTag(trimmed);
+  setEntryTag(acc, entryId, trimmed);
+  render();
+}
+function removeEntry(accId, entryId){
+  const list = loadJSON(LS_ENTRIES_PREFIX+accId, []).filter(e=>e.id!==entryId);
+  saveManualEntries(accId, list); render();
+}
+
+// ---- export / import ----
 document.getElementById('exportBtn').onclick = () => {
-  const blob = new Blob([JSON.stringify(manualAccounts,null,2)], {type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob); a.download = 'net-worth-accounts.json'; a.click();
+  const bundle = {
+    manualAccounts, cryptoAccounts, tagOverrides,
+    cryptoEntries: Object.fromEntries(cryptoAccounts.filter(a=>a.source==='manual').map(a=>[a.id, loadJSON(LS_ENTRIES_PREFIX+a.id, [])]))
+  };
+  const blob = new Blob([JSON.stringify(bundle,null,2)], {type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'net-worth-backup.json'; a.click();
 };
 document.getElementById('importBtn').onclick = () => document.getElementById('importFile').click();
 document.getElementById('importFile').onchange = (e) => {
   const file = e.target.files[0]; if(!file) return;
   const reader = new FileReader();
   reader.onload = () => {
-    try{ const data = JSON.parse(reader.result); if(Array.isArray(data)){ manualAccounts = data; saveAccounts(); render(); } }
-    catch(err){ alert('ไฟล์ไม่ถูกต้อง'); }
+    try{
+      const data = JSON.parse(reader.result);
+      if(data.manualAccounts) manualAccounts = data.manualAccounts;
+      if(data.cryptoAccounts) cryptoAccounts = data.cryptoAccounts;
+      if(data.tagOverrides) tagOverrides = data.tagOverrides;
+      if(data.cryptoEntries) Object.entries(data.cryptoEntries).forEach(([id,list])=>saveManualEntries(id,list));
+      saveAccounts(); saveCryptoAccounts(); saveTagOverrides();
+      render();
+    }catch(err){ alert('ไฟล์ไม่ถูกต้อง'); }
   };
   reader.readAsText(file);
 };
 
-document.getElementById('btcToggle').onclick = () => {
-  const el = document.getElementById('btcDetail');
-  const hidden = el.style.display === 'none';
-  el.style.display = hidden ? '' : 'none';
-  document.getElementById('btcToggle').textContent = hidden ? 'ซ่อนรายละเอียด' : 'แสดงรายละเอียด';
-};
-document.getElementById('tableToggle').onclick = () => {
-  const el = document.getElementById('tableWrap');
-  const hidden = el.style.display === 'none';
-  el.style.display = hidden ? '' : 'none';
-  document.getElementById('tableToggle').textContent = hidden ? 'ซ่อนตาราง' : 'แสดงตาราง';
-};
+const TYPE_LABEL = {'us-stock':'หุ้น US', 'th-stock':'หุ้นไทย', cash:'เงินสด', other:'อื่นๆ', crypto:'คริปโต'};
+function typeColorVar(t){ return {'us-stock':'--accent-2','th-stock':'--amber',cash:'--slate',other:'--muted-soft',crypto:'--accent'}[t] || '--muted-soft'; }
+function cssVar(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
 
-const TYPE_LABEL = {'us-stock':'หุ้น US', 'th-stock':'หุ้นไทย', cash:'เงินสด', crypto:'คริปโต', other:'อื่นๆ', btc:'คริปโต'};
-function typeColor(t){
-  const varName = {'us-stock':'--accent-2','th-stock':'--amber',cash:'--slate',crypto:'--muted-soft',other:'--muted-soft',btc:'--accent'}[t] || '--muted-soft';
-  return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
-}
-
-function computeAssets(){
-  const entries = btcEntries();
+function cryptoAccountValue(acc){
+  const entries = accountEntries(acc);
   const totalBtc = entries.reduce((a,e)=>a+(e.btc||0),0);
   const price = effectivePrice() || (entries.length ? entries[entries.length-1].price : null);
-  const btcValue = price ? totalBtc*price : entries.reduce((a,e)=>a+(e.spent||0),0);
-  const assets = [{ id:'btc', name:'BTC (Bitkub)', type:'btc', value:btcValue, currency:'THB', auto:true }];
-  manualAccounts.forEach(a => assets.push({...a, value:accountValueThb(a)}));
-  return assets;
+  return price ? totalBtc*price : entries.reduce((a,e)=>a+(e.spent||0),0);
 }
 
 function render(){
-  const assets = computeAssets();
-  const total = assets.reduce((a,x)=>a+x.value,0);
+  refreshTagDatalist();
+  const cryptoAssets = cryptoAccounts.map(acc => ({acc, value: cryptoAccountValue(acc)}));
+  const otherAssets = manualAccounts.map(a => ({acc:a, value: accountValueThb(a), manual:true}));
+  const total = cryptoAssets.reduce((s,x)=>s+x.value,0) + otherAssets.reduce((s,x)=>s+x.value,0);
 
   document.getElementById('netWorth').innerHTML = `THB <span class="accent">${fmt(total)}</span>`;
   document.getElementById('netWorthUsd').textContent = fxRate ? `≈ $${fmt(thbToUsd(total),2)}` : '';
   document.getElementById('updatedLine').textContent = synced.last_synced
-    ? 'BTC ซิงก์ล่าสุด: ' + new Date(synced.last_synced).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'})
-    : 'ยังไม่มีข้อมูล sync BTC';
+    ? 'BTC (Bitkub) ซิงก์ล่าสุด: ' + new Date(synced.last_synced).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'})
+    : 'ยังไม่มีข้อมูล sync';
 
+  // allocation by type (crypto grouped together, other by their type)
   const byType = {};
-  assets.forEach(a => byType[a.type] = (byType[a.type]||0) + a.value);
+  cryptoAssets.forEach(x => byType['crypto'] = (byType['crypto']||0) + x.value);
+  otherAssets.forEach(x => byType[x.acc.type] = (byType[x.acc.type]||0) + x.value);
   const types = Object.keys(byType);
-  let angleAcc = 0;
-  const r=62, cx=75, cy=75;
+  let angleAcc = 0; const r=58, cx=70, cy=70;
   const arcs = types.map(t=>{
     const frac = total ? byType[t]/total : 0;
     const start = angleAcc, end = angleAcc + frac*2*Math.PI; angleAcc = end;
-    const x1=cx+r*Math.sin(start), y1=cy-r*Math.cos(start);
-    const x2=cx+r*Math.sin(end), y2=cy-r*Math.cos(end);
+    const x1=cx+r*Math.sin(start), y1=cy-r*Math.cos(start), x2=cx+r*Math.sin(end), y2=cy-r*Math.cos(end);
     const large = (end-start) > Math.PI ? 1 : 0;
-    const col = typeColor(t);
-    const path = frac >= 0.999
-      ? `M${cx},${cy-r} A${r},${r} 0 1 1 ${cx-0.01},${cy-r} Z`
+    const col = cssVar(typeColorVar(t));
+    const path = frac >= 0.999 ? `M${cx},${cy-r} A${r},${r} 0 1 1 ${cx-0.01},${cy-r} Z`
       : `M${cx},${cy} L${x1.toFixed(2)},${y1.toFixed(2)} A${r},${r} 0 ${large} 1 ${x2.toFixed(2)},${y2.toFixed(2)} Z`;
     return `<path d="${path}" fill="${col}"/>`;
   }).join('');
-  const bgVar = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
-  document.getElementById('donut').innerHTML = `${arcs}<circle cx="75" cy="75" r="38" fill="${bgVar}"/>`;
-
+  document.getElementById('donut').innerHTML = arcs + `<circle cx="70" cy="70" r="36" fill="${cssVar('--bg1')}"/>`;
   document.getElementById('allocList').innerHTML = types.sort((a,b)=>byType[b]-byType[a]).map(t=>{
-    const pct = total ? (byType[t]/total*100) : 0;
-    return `<div class="alloc-row"><i class="dot" style="background:${typeColor(t)}"></i>
-      <span class="name">${TYPE_LABEL[t]||t}</span>
-      <span class="pct mono">${fmt(pct,1)}%</span>
-      <span class="val mono">THB ${fmt(byType[t])}</span></div>`;
+    const pct = total ? (byType[t]/total*100):0;
+    return `<div class="alloc-row"><i class="dot" style="background:${cssVar(typeColorVar(t))}"></i>
+      <span class="name">${TYPE_LABEL[t]||t}</span><span class="pct mono">${fmt(pct,1)}%</span><span class="val mono">THB ${fmt(byType[t])}</span></div>`;
   }).join('') || '<div class="empty">ยังไม่มีข้อมูล</div>';
 
-  document.getElementById('accCount').textContent = assets.length + ' บัญชี';
-  document.getElementById('accountsList').innerHTML = assets.map(a=>{
-    const pct = total ? (a.value/total*100) : 0;
-    return `<div class="account-card">
-      <div>
-        <span class="acc-name">${a.name}</span><span class="acc-tag">${a.auto?'sync อัตโนมัติ':TYPE_LABEL[a.type]}</span>
-        <div class="acc-meta">${a.auto ? '' : 'อัปเดตล่าสุด: '+new Date(a.updated).toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'})}</div>
+  // crypto accounts list
+  document.getElementById('cryptoAccountsList').innerHTML = cryptoAssets.map(({acc,value})=>{
+    const pct = total ? (value/total*100) : 0;
+    const isOpen = openAccounts.has(acc.id);
+    return `<div class="glass acc-card">
+      <div class="acc-top">
+        <div>
+          <div class="acc-name-row">
+            <span class="acc-name" style="cursor:pointer" onclick="toggleAccountOpen('${acc.id}')">${isOpen?'▾':'▸'} ${acc.name}</span>
+            <span class="acc-tag">${acc.source==='auto'?'sync อัตโนมัติ':'กรอกมือ'}</span>
+          </div>
+        </div>
+        <div class="acc-val mono">THB ${fmt(value)}<span class="sub">${pct.toFixed(1)}%</span></div>
+        <div class="acc-actions">
+          <button class="icon-btn" onclick="renameCryptoAccount('${acc.id}')">✎</button>
+          ${acc.source==='manual' ? `<button class="icon-btn danger" onclick="deleteCryptoAccount('${acc.id}')">✕</button>` : ''}
+        </div>
       </div>
-      <div class="acc-val mono">THB ${fmt(a.value)}<span class="usd mono">${pct.toFixed(1)}%</span></div>
-      <div class="acc-actions">${a.auto ? '' : `<button class="icon-btn" onclick="editAccountValue('${a.id}')">✎</button><button class="icon-btn" onclick="removeAccount('${a.id}')">✕</button>`}</div>
+      <div class="acc-expand ${isOpen?'open':''}" id="expand-${acc.id}"></div>
+    </div>`;
+  }).join('') || '<div class="empty">ยังไม่มีบัญชีคริปโต</div>';
+
+  cryptoAssets.forEach(({acc}) => { if(openAccounts.has(acc.id)) renderAccountDetail(acc); });
+
+  // other accounts
+  document.getElementById('otherAccountsList').innerHTML = otherAssets.map(({acc})=>{
+    const value = accountValueThb(acc);
+    const pct = total ? (value/total*100) : 0;
+    return `<div class="glass acc-card">
+      <div class="acc-top">
+        <div>
+          <span class="acc-name">${acc.name}</span> <span class="acc-tag">${TYPE_LABEL[acc.type]}</span>
+          <div class="acc-meta">อัปเดตล่าสุด: ${new Date(acc.updated).toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'})}</div>
+        </div>
+        <div class="acc-val mono">THB ${fmt(value)}<span class="sub">${pct.toFixed(1)}%</span></div>
+        <div class="acc-actions">
+          <button class="icon-btn" onclick="editAccountValue('${acc.id}')">✎</button>
+          <button class="icon-btn danger" onclick="removeAccount('${acc.id}')">✕</button>
+        </div>
+      </div>
     </div>`;
   }).join('') || '<div class="empty">ยังไม่มีบัญชี</div>';
-
-  renderBtcDetail();
 }
 
+// ---- shared chart helpers ----
 function smoothPath(pts){
   let path = `M${pts[0][0].toFixed(1)},${pts[0][1].toFixed(1)}`;
-  for(let i=1;i<pts.length;i++){
-    const [x0,y0]=pts[i-1], [x1,y1]=pts[i]; const mx=(x0+x1)/2;
-    path += ` Q${x0.toFixed(1)},${y0.toFixed(1)} ${mx.toFixed(1)},${((y0+y1)/2).toFixed(1)}`;
-  }
+  for(let i=1;i<pts.length;i++){ const [x0,y0]=pts[i-1],[x1,y1]=pts[i]; const mx=(x0+x1)/2;
+    path += ` Q${x0.toFixed(1)},${y0.toFixed(1)} ${mx.toFixed(1)},${((y0+y1)/2).toFixed(1)}`; }
   path += ` T${pts[pts.length-1][0].toFixed(1)},${pts[pts.length-1][1].toFixed(1)}`;
   return path;
 }
-function gridLines(w,h,padT){
-  return [0,0.25,0.5,0.75,1].map(f=>{
-    const y = padT + f*(h-padT);
-    return `<line x1="0" y1="${y.toFixed(1)}" x2="${w}" y2="${y.toFixed(1)}" stroke="currentColor" stroke-opacity="0.08"/>`;
-  }).join('');
+function gridLines(w,h,padT,color){
+  return [0,0.25,0.5,0.75,1].map(f=>{ const y = padT+f*(h-padT);
+    return `<line x1="0" y1="${y.toFixed(1)}" x2="${w}" y2="${y.toFixed(1)}" stroke="${color}" stroke-opacity="0.1"/>`; }).join('');
 }
 function yAxisLabels(h,padT,min,max,color){
   return `<text x="4" y="${(padT+9).toFixed(1)}" fill="${color}" font-size="10" font-family="JetBrains Mono">${fmt(max)}</text>
     <text x="4" y="${(h-2).toFixed(1)}" fill="${color}" font-size="10" font-family="JetBrains Mono">${fmt(min)}</text>`;
 }
 function xAxisDates(w,h,first,last,color){
-  const f=t=>new Date(t).toLocaleDateString('th-TH',{day:'numeric',month:'short'});
+  const f=tv=>new Date(tv).toLocaleDateString('th-TH',{day:'numeric',month:'short'});
   return `<text x="0" y="${h-2}" fill="${color}" font-size="9">${f(first)}</text>
     <text x="${w}" y="${h-2}" fill="${color}" font-size="9" text-anchor="end">${f(last)}</text>`;
 }
@@ -413,18 +578,22 @@ function endLabel(x,y,text,up,color){
   return `<text x="${x.toFixed(1)}" y="${(y+(up?-10:16)).toFixed(1)}" fill="${color}" font-size="11" font-family="JetBrains Mono" text-anchor="end">${text}</text>`;
 }
 
-function renderBtcDetail(){
-  const entries = btcEntries();
-  const strip = document.getElementById('btcStrip');
-  const cs = getComputedStyle(document.documentElement);
-  const accent = cs.getPropertyValue('--accent').trim();
-  const accent2 = cs.getPropertyValue('--accent-2').trim();
-  const mutedSoft = cs.getPropertyValue('--muted-soft').trim();
+function renderAccountDetail(acc){
+  const host = document.getElementById('expand-'+acc.id);
+  const entries = accountEntries(acc);
+  const accent = cssVar('--accent'), accent2 = cssVar('--accent-2'), mutedSoft = cssVar('--muted-soft');
+
+  const entryFormHtml = `<form class="inline entry" data-add-entry="${acc.id}">
+    <input type="number" step="any" placeholder="ใช้ (THB)" data-f="spent" required>
+    <input type="number" step="any" placeholder="ราคา (THB/BTC)" data-f="price" required>
+    <input type="number" step="any" placeholder="ได้ (BTC) auto" data-f="btc">
+    <input list="tagOptions" placeholder="แท็ก (ไม่บังคับ)" data-f="tag">
+    <button type="submit">เพิ่ม</button>
+  </form>`;
 
   if(!entries.length){
-    strip.innerHTML = '<div class="empty">ยังไม่มีข้อมูล</div>';
-    document.getElementById('portfolioChart').innerHTML=''; document.getElementById('priceChart').innerHTML='';
-    document.getElementById('tableWrap').innerHTML=''; return;
+    host.innerHTML = `<div class="empty">ยังไม่มีรายการซื้อ</div>${acc.source==='manual'?entryFormHtml:''}`;
+    bindEntryForm(host, acc); return;
   }
 
   const totalSpent = entries.reduce((a,e)=>a+(e.spent||0),0);
@@ -435,70 +604,118 @@ function renderBtcDetail(){
   const pnl = curVal-totalSpent;
   const pnlPct = totalSpent ? pnl/totalSpent*100 : null;
 
-  strip.innerHTML = [
-    ['ลงทุนสะสม', 'THB '+fmt(totalSpent), ''],
-    ['BTC สะสม', fmt(totalBtc,8), ''],
-    ['ต้นทุนเฉลี่ย', 'THB '+fmt(avgCost), ''],
-    ['กำไร/ขาดทุน', (pnl>=0?'+':'')+fmt(pnlPct,2)+'%', pnl>=0?'pos':'neg'],
-    ['จำนวนครั้ง', entries.length, ''],
-  ].map(([l,v,cls])=>`<div class="item"><div class="l">${l}</div><div class="v mono ${cls}">${v}</div></div>`).join('');
+  const strip = [
+    ['ลงทุนสะสม','THB '+fmt(totalSpent),''],['BTC สะสม',fmt(totalBtc,8),''],
+    ['ต้นทุนเฉลี่ย','THB '+fmt(avgCost),''],['กำไร/ขาดทุน',(pnl>=0?'+':'')+fmt(pnlPct,2)+'%',pnl>=0?'pos':'neg'],
+    ['จำนวนครั้ง',entries.length,'']
+  ].map(([l,v,c])=>`<div class="item"><div class="l">${l}</div><div class="v mono ${c}">${v}</div></div>`).join('');
 
-  (function(){
-    const svg = document.getElementById('priceChart');
-    const prices = entries.map(e=>e.price).filter(p=>p!=null);
-    const min = Math.min(...prices, avgCost), max = Math.max(...prices, avgCost);
-    const range = (max-min)||1;
-    const w=640,h=200,padT=16,padB=32,padL=64,usableW=w-padL;
-    const y = p => h-padB-((p-min)/range)*(h-padT-padB);
-    const pts = prices.map((p,i)=>[padL+(prices.length>1?i*usableW/(prices.length-1):usableW/2), y(p)]);
-    const path = smoothPath(pts);
-    const area = `${path} L${pts[pts.length-1][0].toFixed(1)},${h-padB} L${padL},${h-padB} Z`;
-    const avgY = y(avgCost).toFixed(1);
-    const dots = pts.map((p,i)=> i===pts.length-1
-      ? `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="4" fill="${accent}"/>`
-      : `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="2" fill="${accent}" opacity=".7"/>`).join('');
-    const last = pts[pts.length-1];
-    svg.innerHTML = `<defs><linearGradient id="pf" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="${accent}" stop-opacity=".3"/><stop offset="100%" stop-color="${accent}" stop-opacity="0"/></linearGradient></defs>
-      <g style="color:${mutedSoft}">${gridLines(w,h-padB,padT)}</g>
-      <path d="${area}" fill="url(#pf)"/>
-      <line x1="${padL}" y1="${avgY}" x2="${w}" y2="${avgY}" stroke="${accent2}" stroke-width="1.5" stroke-dasharray="5,4"/>
-      <path d="${path}" fill="none" stroke="${accent}" stroke-width="2"/>
-      ${dots}${endLabel(last[0],last[1],fmt(prices[prices.length-1]),true,accent)}
-      ${yAxisLabels(h-padB,padT,min,max,mutedSoft)}${xAxisDates(w,h,entries[0].time,entries[entries.length-1].time,mutedSoft)}`;
-  })();
+  // price chart
+  const prices = entries.map(e=>e.price).filter(p=>p!=null);
+  const min = Math.min(...prices, avgCost), max = Math.max(...prices, avgCost), range=(max-min)||1;
+  const w=640,h=200,padT=16,padB=32,padL=64,usableW=w-padL;
+  const y = p => h-padB-((p-min)/range)*(h-padT-padB);
+  const pts = prices.map((p,i)=>[padL+(prices.length>1?i*usableW/(prices.length-1):usableW/2), y(p)]);
+  const path = smoothPath(pts);
+  const area = `${path} L${pts[pts.length-1][0].toFixed(1)},${h-padB} L${padL},${h-padB} Z`;
+  const avgY = y(avgCost).toFixed(1);
+  const dots = pts.map((p,i)=> i===pts.length-1 ? `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="4" fill="${accent}"/>` : `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="2" fill="${accent}" opacity=".7"/>`).join('');
+  const last = pts[pts.length-1];
+  const priceSvg = `<defs><linearGradient id="pf-${acc.id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${accent}" stop-opacity=".3"/><stop offset="100%" stop-color="${accent}" stop-opacity="0"/></linearGradient></defs>
+    ${gridLines(w,h-padB,padT,mutedSoft)}
+    <path d="${area}" fill="url(#pf-${acc.id})"/>
+    <line x1="${padL}" y1="${avgY}" x2="${w}" y2="${avgY}" stroke="${accent2}" stroke-width="1.5" stroke-dasharray="5,4"/>
+    <path d="${path}" fill="none" stroke="${accent}" stroke-width="2"/>${dots}
+    ${endLabel(last[0],last[1],fmt(prices[prices.length-1]),true,accent)}
+    ${yAxisLabels(h-padB,padT,min,max,mutedSoft)}${xAxisDates(w,h,entries[0].time,entries[entries.length-1].time,mutedSoft)}`;
 
-  (function(){
-    const svg = document.getElementById('portfolioChart');
-    const note = document.getElementById('portfolioNote');
-    note.textContent = effectivePrice() ? '' : '* ใช้ราคาซื้อครั้งล่าสุดประมาณมูลค่า เนื่องจากดึงราคาสดไม่สำเร็จ';
-    let cs_=0, cb=0; const inv=[], val=[];
-    entries.forEach(e=>{ cs_+=e.spent||0; cb+=e.btc||0; inv.push(cs_); val.push(cb*price); });
-    const max = Math.max(...inv,...val)*1.05 || 1;
-    const w=640,h=200,padT=16,padB=32,padL=64,usableW=w-padL;
-    const y = v => h-padB-(v/max)*(h-padT-padB);
-    const xAt = i => padL+(inv.length>1?i*usableW/(inv.length-1):usableW/2);
-    const pInv = inv.map((v,i)=>[xAt(i),y(v)]), pVal = val.map((v,i)=>[xAt(i),y(v)]);
-    const lastI=pInv[pInv.length-1], lastV=pVal[pVal.length-1];
-    svg.innerHTML = `<g style="color:${mutedSoft}">${gridLines(w,h-padB,padT)}</g>
-      <path d="${smoothPath(pInv)}" fill="none" stroke="${mutedSoft}" stroke-width="1.5" stroke-dasharray="4,4"/>
-      <path d="${smoothPath(pVal)}" fill="none" stroke="${accent}" stroke-width="2.5"/>
-      <circle cx="${lastV[0].toFixed(1)}" cy="${lastV[1].toFixed(1)}" r="4" fill="${accent}"/>
-      <circle cx="${lastI[0].toFixed(1)}" cy="${lastI[1].toFixed(1)}" r="3" fill="${mutedSoft}"/>
-      ${endLabel(lastV[0],lastV[1],'THB '+fmt(val[val.length-1]), lastV[1]<lastI[1], accent)}
-      ${endLabel(lastI[0],lastI[1],'THB '+fmt(inv[inv.length-1]), lastI[1]<=lastV[1], mutedSoft)}
-      ${yAxisLabels(h-padB,padT,0,max,mutedSoft)}${xAxisDates(w,h,entries[0].time,entries[entries.length-1].time,mutedSoft)}`;
-  })();
-
-  const sorted = [...entries].sort((a,b)=> new Date(b.time)-new Date(a.time));
-  const rows = sorted.map(e => `
-    <tr>
-      <td>${new Date(e.time).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'})}${String(e.id||'').startsWith('local-') ? '<span class="pending">รอ sync</span>' : ''}</td>
-      <td class="mono">${fmt(e.spent)}</td>
-      <td class="mono">${fmt(e.price)}</td>
-      <td class="mono">${fmt(e.btc,8)}</td>
+  const sorted = [...entries].sort((a,b)=>new Date(b.time)-new Date(a.time));
+  const rows = sorted.map(e => `<tr>
+      <td>${new Date(e.time).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'})}</td>
+      <td class="mono">${fmt(e.spent)}</td><td class="mono">${fmt(e.price)}</td><td class="mono">${fmt(e.btc,8)}</td>
+      <td><span class="tag-chip" onclick="editEntryTag('${acc.id}','${e.id}','${(e.tag||'').replace(/'/g,"\\'")}')">${e.tag||'+ แท็ก'}</span></td>
+      <td>${acc.source==='manual' ? `<span class="icon-btn danger" onclick="removeEntry('${acc.id}','${e.id}')">✕</span>` : ''}</td>
     </tr>`).join('');
-  document.getElementById('tableWrap').innerHTML = `<table><thead><tr><th>เวลา</th><th>ใช้ (THB)</th><th>ราคา</th><th>ได้ (BTC)</th></tr></thead><tbody>${rows}</tbody></table>`;
+
+  host.innerHTML = `
+    <div class="stat-strip">${strip}</div>
+    <svg class="chart">${priceSvg}</svg>
+    <div class="table-wrap"><table><thead><tr><th>เวลา</th><th>ใช้</th><th>ราคา</th><th>BTC</th><th>แท็ก</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>
+    ${acc.source==='manual' ? entryFormHtml : '<div class="hint">บัญชีนี้ sync อัตโนมัติจาก Bitkub ทุกชั่วโมง — กดที่แท็กในตารางเพื่อแก้ไขได้เสมอ</div>'}
+  `;
+  host.querySelector('svg.chart').setAttribute('viewBox','0 0 640 200');
+  bindEntryForm(host, acc);
+}
+
+function bindEntryForm(host, acc){
+  const form = host.querySelector('[data-add-entry]');
+  if(!form) return;
+  form.addEventListener('submit', e=>{
+    e.preventDefault();
+    const spent = parseFloat(form.querySelector('[data-f=spent]').value);
+    const price = parseFloat(form.querySelector('[data-f=price]').value);
+    let btc = parseFloat(form.querySelector('[data-f=btc]').value);
+    const tag = form.querySelector('[data-f=tag]').value.trim();
+    if(isNaN(spent)||isNaN(price)) return;
+    if(isNaN(btc)) btc = spent/price;
+    if(tag) createTag(tag);
+    const list = loadJSON(LS_ENTRIES_PREFIX+acc.id, []);
+    list.push({id:uid('e'), time:new Date().toISOString(), spent, price, btc, tag});
+    saveManualEntries(acc.id, list);
+    render();
+  });
+}
+
+// ---- tags view ----
+document.getElementById('addTagForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  const input = document.getElementById('newTagName');
+  const name = input.value.trim();
+  if(!name) return;
+  createTag(name);
+  input.value = '';
+  renderTags();
+});
+function renameTagPrompt(tag){
+  const next = prompt('เปลี่ยนชื่อแท็ก', tag);
+  if(!next || !next.trim() || next.trim()===tag) return;
+  renameTagEverywhere(tag, next.trim());
+  renderTags();
+}
+function deleteTagPrompt(tag){
+  if(!confirm(`ลบแท็ก "${tag}"? รายการที่เคยติดแท็กนี้จะกลายเป็น "ไม่มีแท็ก"`)) return;
+  deleteTagEverywhere(tag);
+  renderTags();
+}
+
+function renderTags(){
+  refreshTagDatalist();
+  // management chips (includes tags with zero entries too, via registry)
+  document.getElementById('tagChipsWrap').innerHTML = allTagsUsed().map(tag => `
+    <span class="tag-chip" style="display:inline-flex; align-items:center; gap:6px; padding:5px 6px 5px 12px">
+      ${tag}
+      <span class="icon-btn" style="padding:0 3px" onclick="renameTagPrompt('${tag.replace(/'/g,"\\'")}')">✎</span>
+      <span class="icon-btn danger" style="padding:0 3px" onclick="deleteTagPrompt('${tag.replace(/'/g,"\\'")}')">✕</span>
+    </span>`).join('') || '<div class="empty">ยังไม่มีแท็ก — สร้างใหม่ด้านบนได้เลย</div>';
+
+  const groups = {};
+  cryptoAccounts.forEach(acc => accountEntries(acc).forEach(e => {
+    const tag = e.tag || 'ไม่มีแท็ก';
+    (groups[tag] = groups[tag]||[]).push({...e, accName:acc.name});
+  }));
+  const keys = Object.keys(groups).sort((a,b)=> (a==='ไม่มีแท็ก')-(b==='ไม่มีแท็ก') || a.localeCompare(b));
+  document.getElementById('tagsWrap').innerHTML = keys.map(tag=>{
+    const items = groups[tag];
+    const spent = items.reduce((a,e)=>a+(e.spent||0),0);
+    const btc = items.reduce((a,e)=>a+(e.btc||0),0);
+    const rows = items.sort((a,b)=>new Date(b.time)-new Date(a.time)).map(e=>`
+      <tr><td>${e.accName}</td><td>${new Date(e.time).toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'})}</td>
+      <td class="mono">${fmt(e.spent)}</td><td class="mono">${fmt(e.btc,8)}</td></tr>`).join('');
+    return `<div class="tag-group">
+      <div class="tag-group-head"><span class="t">🏷️ ${tag}</span><span class="v mono">THB ${fmt(spent)} · ${fmt(btc,8)} BTC</span></div>
+      <div class="table-wrap"><table><thead><tr><th>บัญชี</th><th>วันที่</th><th>ใช้</th><th>BTC</th></tr></thead><tbody>${rows}</tbody></table></div>
+    </div>`;
+  }).join('') || '<div class="empty">ยังไม่มีรายการที่ติดแท็ก</div>';
 }
 
 (async function init(){
