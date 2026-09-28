@@ -805,6 +805,7 @@ function renderStockAccountDetail(acc){
       <td>${h.symbol.toUpperCase()}</td>
       <td class="mono">${fmt(h.shares,4)}</td>
       <td class="mono">$${fmt(h.costPerShare,2)}</td>
+      <td class="mono">$${fmt(cost,2)}</td>
       <td class="mono">$${fmt(price,2)}</td>
       <td class="mono">$${fmt(value,2)}</td>
       <td class="mono ${pl>=0?'pos':'neg'}" style="color:${pl>=0?'var(--success)':'var(--error)'}">${pl>=0?'+':''}${fmt(plPct,2)}%</td>
@@ -821,7 +822,7 @@ function renderStockAccountDetail(acc){
   host.innerHTML = `
     <div class="stat-strip">${strip}</div>
     ${noKeyNote}
-    <div class="table-wrap"><table><thead><tr><th>Symbol</th><th>หุ้น</th><th>ต้นทุน</th><th>ราคา</th><th>มูลค่า</th><th>P/L</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>
+    <div class="table-wrap"><table><thead><tr><th>Symbol</th><th>หุ้น</th><th>ต้นทุน/หุ้น</th><th>ต้นทุนรวม</th><th>ราคา</th><th>มูลค่า</th><th>P/L</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>
     ${addForm}
   `;
   bindHoldingForm(host, acc);
