@@ -180,6 +180,12 @@
     <div id="cryptoAccountsList"></div>
 
     <div class="section-head" style="margin-top:22px">
+      <h2 style="font-size:14px">บัญชีหุ้น (US)</h2>
+      <button class="text" id="addStockAcctBtn">+ เพิ่มบัญชี</button>
+    </div>
+    <div id="stockAccountsList"></div>
+
+    <div class="section-head" style="margin-top:22px">
       <h2 style="font-size:14px">บัญชีอื่นๆ</h2>
     </div>
     <div id="otherAccountsList"></div>
@@ -187,7 +193,6 @@
     <form class="glass panel inline" id="addAccountForm" style="margin-top:14px">
       <input id="accName" placeholder="ชื่อบัญชี เช่น Dime — หุ้น US" required>
       <select id="accType">
-        <option value="us-stock">หุ้น US</option>
         <option value="th-stock">หุ้นไทย</option>
         <option value="cash">เงินสด</option>
         <option value="other">อื่นๆ</option>
@@ -222,6 +227,14 @@
         <button class="ghost" id="themeToggle">🌙 สลับธีม</button>
         <button class="ghost" id="langToggleBtn">🌐 EN / TH</button>
       </div>
+    </div>
+    <div class="glass panel">
+      <h2>Stock price API</h2>
+      <div class="hint">ใส่ API key ฟรีจาก twelvedata.com (สมัครไม่ต้องใช้บัตร) เพื่อให้ราคาหุ้น US อัปเดตอัตโนมัติ — ถ้าไม่ใส่ ระบบจะใช้ต้นทุนแทนราคาตลาด</div>
+      <form class="inline" id="twelveKeyForm" style="grid-template-columns:1fr auto; margin-top:10px">
+        <input id="twelveKeyInput" placeholder="Twelve Data API key">
+        <button type="submit">บันทึก</button>
+      </form>
     </div>
     <div class="glass panel">
       <h2>ข้อมูลบัญชี</h2>
@@ -289,6 +302,14 @@ let curPrice = parseFloat(localStorage.getItem(LS_CUR)) || null;
 let livePrice = null, fxRate = null;
 let manualAccounts = loadJSON(LS_ACCOUNTS, []);
 let cryptoAccounts = loadJSON(LS_CRYPTO_ACCOUNTS, [{id:'bitkub', name:'BTC (Bitkub)', source:'auto'}]);
+const LS_STOCK_ACCOUNTS = 'net_worth_stock_accounts_v1';
+const LS_HOLDINGS_PREFIX = 'net_worth_holdings_';
+const LS_STOCK_PRICES = 'net_worth_stock_prices_v1';
+const LS_TWELVE_KEY = 'net_worth_twelve_key_v1';
+let stockAccounts = loadJSON(LS_STOCK_ACCOUNTS, []);
+let stockPrices = loadJSON(LS_STOCK_PRICES, {});
+let twelveKey = localStorage.getItem(LS_TWELVE_KEY) || '';
+let openStockAccounts = new Set();
 let tagOverrides = loadJSON(LS_TAG_OVERRIDES, {});
 let tagRegistry = loadJSON(LS_TAGS, []);
 function saveTagRegistry(){ saveJSON(LS_TAGS, tagRegistry); }
@@ -296,6 +317,7 @@ let openAccounts = new Set();
 
 function usdToThb(v){ return fxRate ? v/fxRate : null; }
 function thbToUsd(v){ return fxRate ? v*fxRate : null; }
+function usdLabel(thbVal){ const u = thbToUsd(thbVal); return u!=null ? ' ($'+fmt(u,2)+')' : ''; }
 function effectivePrice(){ return curPrice || livePrice; }
 function saveCryptoAccounts(){ saveJSON(LS_CRYPTO_ACCOUNTS, cryptoAccounts); }
 function saveTagOverrides(){ saveJSON(LS_TAG_OVERRIDES, tagOverrides); }
@@ -439,8 +461,9 @@ function removeEntry(accId, entryId){
 // ---- export / import ----
 document.getElementById('exportBtn').onclick = () => {
   const bundle = {
-    manualAccounts, cryptoAccounts, tagOverrides,
-    cryptoEntries: Object.fromEntries(cryptoAccounts.filter(a=>a.source==='manual').map(a=>[a.id, loadJSON(LS_ENTRIES_PREFIX+a.id, [])]))
+    manualAccounts, cryptoAccounts, tagOverrides, tagRegistry, stockAccounts,
+    cryptoEntries: Object.fromEntries(cryptoAccounts.filter(a=>a.source==='manual').map(a=>[a.id, loadJSON(LS_ENTRIES_PREFIX+a.id, [])])),
+    holdings: Object.fromEntries(stockAccounts.map(a=>[a.id, holdingsOf(a.id)]))
   };
   const blob = new Blob([JSON.stringify(bundle,null,2)], {type:'application/json'});
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'net-worth-backup.json'; a.click();
@@ -455,13 +478,81 @@ document.getElementById('importFile').onchange = (e) => {
       if(data.manualAccounts) manualAccounts = data.manualAccounts;
       if(data.cryptoAccounts) cryptoAccounts = data.cryptoAccounts;
       if(data.tagOverrides) tagOverrides = data.tagOverrides;
+      if(data.tagRegistry) tagRegistry = data.tagRegistry;
+      if(data.stockAccounts) stockAccounts = data.stockAccounts;
       if(data.cryptoEntries) Object.entries(data.cryptoEntries).forEach(([id,list])=>saveManualEntries(id,list));
-      saveAccounts(); saveCryptoAccounts(); saveTagOverrides();
-      render();
+      if(data.holdings) Object.entries(data.holdings).forEach(([id,list])=>saveHoldings(id,list));
+      saveAccounts(); saveCryptoAccounts(); saveTagOverrides(); saveTagRegistry(); saveStockAccounts();
+      fetchAllStockPrices().then(render);
     }catch(err){ alert('ไฟล์ไม่ถูกต้อง'); }
   };
   reader.readAsText(file);
 };
+
+// ---- stock accounts / holdings ----
+function saveStockAccounts(){ saveJSON(LS_STOCK_ACCOUNTS, stockAccounts); }
+function saveHoldings(accId, list){ saveJSON(LS_HOLDINGS_PREFIX+accId, list); }
+function holdingsOf(accId){ return loadJSON(LS_HOLDINGS_PREFIX+accId, []); }
+
+document.getElementById('addStockAcctBtn').onclick = () => {
+  const name = prompt('ชื่อบัญชีหุ้น เช่น "Dime"'); if(!name) return;
+  stockAccounts.push({id:uid('stock'), name}); saveStockAccounts(); render();
+};
+function renameStockAccount(id){
+  const acc = stockAccounts.find(a=>a.id===id); if(!acc) return;
+  const name = prompt('เปลี่ยนชื่อบัญชี', acc.name); if(!name) return;
+  acc.name = name; saveStockAccounts(); render();
+}
+function deleteStockAccount(id){
+  const acc = stockAccounts.find(a=>a.id===id); if(!acc) return;
+  if(!confirm(`ลบบัญชี "${acc.name}" และหุ้นทั้งหมดในนั้น?`)) return;
+  stockAccounts = stockAccounts.filter(a=>a.id!==id);
+  localStorage.removeItem(LS_HOLDINGS_PREFIX+id);
+  saveStockAccounts(); render();
+}
+function toggleStockAccountOpen(id){
+  if(openStockAccounts.has(id)) openStockAccounts.delete(id); else openStockAccounts.add(id);
+  render();
+}
+function removeHolding(accId, holdingId){
+  const list = holdingsOf(accId).filter(h=>h.id!==holdingId);
+  saveHoldings(accId, list); render();
+}
+
+document.getElementById('twelveKeyForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  twelveKey = document.getElementById('twelveKeyInput').value.trim();
+  localStorage.setItem(LS_TWELVE_KEY, twelveKey);
+  fetchAllStockPrices().then(render);
+});
+
+async function fetchStockPrice(symbol){
+  const cached = stockPrices[symbol];
+  if(cached && Date.now()-cached.t < 15*60*1000) return cached.price;
+  if(!twelveKey) return null;
+  try{
+    const res = await fetch(`https://api.twelvedata.com/price?symbol=${encodeURIComponent(symbol)}&apikey=${twelveKey}`);
+    const data = await res.json();
+    const price = parseFloat(data.price);
+    if(!isNaN(price)){
+      stockPrices[symbol] = {price, t: Date.now()};
+      saveJSON(LS_STOCK_PRICES, stockPrices);
+      return price;
+    }
+  }catch(e){}
+  return cached ? cached.price : null;
+}
+async function fetchAllStockPrices(){
+  const symbols = new Set();
+  stockAccounts.forEach(acc => holdingsOf(acc.id).forEach(h => symbols.add(h.symbol.toUpperCase())));
+  for(const sym of symbols) await fetchStockPrice(sym);
+}
+function holdingPriceUsd(h){ return stockPrices[h.symbol.toUpperCase()]?.price ?? h.costPerShare; }
+function stockAccountValueThb(accId){
+  const holdings = holdingsOf(accId);
+  const usdTotal = holdings.reduce((a,h)=> a + h.shares*holdingPriceUsd(h), 0);
+  return usdToThb(usdTotal) ?? usdTotal;
+}
 
 const TYPE_LABEL = {'us-stock':'หุ้น US', 'th-stock':'หุ้นไทย', cash:'เงินสด', other:'อื่นๆ', crypto:'คริปโต'};
 function typeColorVar(t){ return {'us-stock':'--accent-2','th-stock':'--amber',cash:'--slate',other:'--muted-soft',crypto:'--accent'}[t] || '--muted-soft'; }
@@ -476,9 +567,11 @@ function cryptoAccountValue(acc){
 
 function render(){
   refreshTagDatalist();
+  document.getElementById('twelveKeyInput').value = twelveKey;
   const cryptoAssets = cryptoAccounts.map(acc => ({acc, value: cryptoAccountValue(acc)}));
+  const stockAssets = stockAccounts.map(acc => ({acc, value: stockAccountValueThb(acc.id)}));
   const otherAssets = manualAccounts.map(a => ({acc:a, value: accountValueThb(a), manual:true}));
-  const total = cryptoAssets.reduce((s,x)=>s+x.value,0) + otherAssets.reduce((s,x)=>s+x.value,0);
+  const total = cryptoAssets.reduce((s,x)=>s+x.value,0) + stockAssets.reduce((s,x)=>s+x.value,0) + otherAssets.reduce((s,x)=>s+x.value,0);
 
   document.getElementById('netWorth').innerHTML = `THB <span class="accent">${fmt(total)}</span>`;
   document.getElementById('netWorthUsd').textContent = fxRate ? `≈ $${fmt(thbToUsd(total),2)}` : '';
@@ -489,6 +582,7 @@ function render(){
   // allocation by type (crypto grouped together, other by their type)
   const byType = {};
   cryptoAssets.forEach(x => byType['crypto'] = (byType['crypto']||0) + x.value);
+  stockAssets.forEach(x => byType['us-stock'] = (byType['us-stock']||0) + x.value);
   otherAssets.forEach(x => byType[x.acc.type] = (byType[x.acc.type]||0) + x.value);
   const types = Object.keys(byType);
   let angleAcc = 0; const r=58, cx=70, cy=70;
@@ -532,6 +626,27 @@ function render(){
   }).join('') || '<div class="empty">ยังไม่มีบัญชีคริปโต</div>';
 
   cryptoAssets.forEach(({acc}) => { if(openAccounts.has(acc.id)) renderAccountDetail(acc); });
+
+  // stock accounts list
+  document.getElementById('stockAccountsList').innerHTML = stockAssets.map(({acc,value})=>{
+    const pct = total ? (value/total*100) : 0;
+    const isOpen = openStockAccounts.has(acc.id);
+    return `<div class="glass acc-card">
+      <div class="acc-top">
+        <div class="acc-name-row">
+          <span class="acc-name" style="cursor:pointer" onclick="toggleStockAccountOpen('${acc.id}')">${isOpen?'▾':'▸'} ${acc.name}</span>
+          <span class="acc-tag">${holdingsOf(acc.id).length} หุ้น</span>
+        </div>
+        <div class="acc-val mono">THB ${fmt(value)}<span class="sub">${pct.toFixed(1)}%${usdLabel(value)}</span></div>
+        <div class="acc-actions">
+          <button class="icon-btn" onclick="renameStockAccount('${acc.id}')">✎</button>
+          <button class="icon-btn danger" onclick="deleteStockAccount('${acc.id}')">✕</button>
+        </div>
+      </div>
+      <div class="acc-expand ${isOpen?'open':''}" id="stock-expand-${acc.id}"></div>
+    </div>`;
+  }).join('') || '<div class="empty">ยังไม่มีบัญชีหุ้น</div>';
+  stockAssets.forEach(({acc}) => { if(openStockAccounts.has(acc.id)) renderStockAccountDetail(acc); });
 
   // other accounts
   document.getElementById('otherAccountsList').innerHTML = otherAssets.map(({acc})=>{
@@ -605,8 +720,8 @@ function renderAccountDetail(acc){
   const pnlPct = totalSpent ? pnl/totalSpent*100 : null;
 
   const strip = [
-    ['ลงทุนสะสม','THB '+fmt(totalSpent),''],['BTC สะสม',fmt(totalBtc,8),''],
-    ['ต้นทุนเฉลี่ย','THB '+fmt(avgCost),''],['กำไร/ขาดทุน',(pnl>=0?'+':'')+fmt(pnlPct,2)+'%',pnl>=0?'pos':'neg'],
+    ['ลงทุนสะสม','THB '+fmt(totalSpent)+usdLabel(totalSpent),''],['BTC สะสม',fmt(totalBtc,8),''],
+    ['ต้นทุนเฉลี่ย','THB '+fmt(avgCost)+usdLabel(avgCost),''],['กำไร/ขาดทุน',(pnl>=0?'+':'')+fmt(pnlPct,2)+'%',pnl>=0?'pos':'neg'],
     ['จำนวนครั้ง',entries.length,'']
   ].map(([l,v,c])=>`<div class="item"><div class="l">${l}</div><div class="v mono ${c}">${v}</div></div>`).join('');
 
@@ -626,7 +741,7 @@ function renderAccountDetail(acc){
     <path d="${area}" fill="url(#pf-${acc.id})"/>
     <line x1="${padL}" y1="${avgY}" x2="${w}" y2="${avgY}" stroke="${accent2}" stroke-width="1.5" stroke-dasharray="5,4"/>
     <path d="${path}" fill="none" stroke="${accent}" stroke-width="2"/>${dots}
-    ${endLabel(last[0],last[1],fmt(prices[prices.length-1]),true,accent)}
+    ${endLabel(last[0],last[1],fmt(prices[prices.length-1])+usdLabel(prices[prices.length-1]),true,accent)}
     ${yAxisLabels(h-padB,padT,min,max,mutedSoft)}${xAxisDates(w,h,entries[0].time,entries[entries.length-1].time,mutedSoft)}`;
 
   const sorted = [...entries].sort((a,b)=>new Date(b.time)-new Date(a.time));
@@ -662,6 +777,69 @@ function bindEntryForm(host, acc){
     const list = loadJSON(LS_ENTRIES_PREFIX+acc.id, []);
     list.push({id:uid('e'), time:new Date().toISOString(), spent, price, btc, tag});
     saveManualEntries(acc.id, list);
+    render();
+  });
+}
+
+function renderStockAccountDetail(acc){
+  const host = document.getElementById('stock-expand-'+acc.id);
+  const holdings = holdingsOf(acc.id);
+  const noKeyNote = twelveKey ? '' : '<div class="hint">ยังไม่ได้ใส่ Twelve Data API key ในหน้าตั้งค่า — ใช้ต้นทุนต่อหุ้นแทนราคาตลาดไปก่อน</div>';
+
+  const addForm = `<form class="inline" data-add-holding="${acc.id}" style="grid-template-columns:1fr 1fr 1fr auto; margin-top:12px">
+    <input placeholder="Symbol เช่น VOO" data-f="symbol" style="text-transform:uppercase" required>
+    <input type="number" step="any" placeholder="จำนวนหุ้น" data-f="shares" required>
+    <input type="number" step="any" placeholder="ต้นทุน/หุ้น (USD)" data-f="cost" required>
+    <button type="submit">เพิ่ม</button>
+  </form>`;
+
+  if(!holdings.length){ host.innerHTML = `<div class="empty">ยังไม่มีหุ้นในบัญชีนี้</div>${noKeyNote}${addForm}`; bindHoldingForm(host, acc); return; }
+
+  let totalValue=0, totalCost=0;
+  const rows = holdings.map(h=>{
+    const price = holdingPriceUsd(h);
+    const value = h.shares*price, cost = h.shares*h.costPerShare;
+    totalValue += value; totalCost += cost;
+    const pl = value-cost, plPct = cost? pl/cost*100 : null;
+    return `<tr>
+      <td>${h.symbol.toUpperCase()}</td>
+      <td class="mono">${fmt(h.shares,4)}</td>
+      <td class="mono">$${fmt(h.costPerShare,2)}</td>
+      <td class="mono">$${fmt(price,2)}</td>
+      <td class="mono">$${fmt(value,2)}</td>
+      <td class="mono ${pl>=0?'pos':'neg'}" style="color:${pl>=0?'var(--success)':'var(--error)'}">${pl>=0?'+':''}${fmt(plPct,2)}%</td>
+      <td><span class="icon-btn danger" onclick="removeHolding('${acc.id}','${h.id}')">✕</span></td>
+    </tr>`;
+  }).join('');
+  const totalPl = totalValue-totalCost, totalPlPct = totalCost? totalPl/totalCost*100:null;
+  const strip = [
+    ['มูลค่ารวม', '$'+fmt(totalValue,2)+usdToThbLabel(totalValue), ''],
+    ['ต้นทุนรวม', '$'+fmt(totalCost,2)+usdToThbLabel(totalCost), ''],
+    ['กำไร/ขาดทุน', (totalPl>=0?'+':'')+fmt(totalPlPct,2)+'%', totalPl>=0?'pos':'neg'],
+  ].map(([l,v,c])=>`<div class="item"><div class="l">${l}</div><div class="v mono ${c}">${v}</div></div>`).join('');
+
+  host.innerHTML = `
+    <div class="stat-strip">${strip}</div>
+    ${noKeyNote}
+    <div class="table-wrap"><table><thead><tr><th>Symbol</th><th>หุ้น</th><th>ต้นทุน</th><th>ราคา</th><th>มูลค่า</th><th>P/L</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>
+    ${addForm}
+  `;
+  bindHoldingForm(host, acc);
+}
+function usdToThbLabel(usd){ const t = usdToThb(usd); return t!=null ? ' (THB '+fmt(t)+')' : ''; }
+function bindHoldingForm(host, acc){
+  const form = host.querySelector('[data-add-holding]');
+  if(!form) return;
+  form.addEventListener('submit', e=>{
+    e.preventDefault();
+    const symbol = form.querySelector('[data-f=symbol]').value.trim().toUpperCase();
+    const shares = parseFloat(form.querySelector('[data-f=shares]').value);
+    const cost = parseFloat(form.querySelector('[data-f=cost]').value);
+    if(!symbol || isNaN(shares) || isNaN(cost)) return;
+    const list = holdingsOf(acc.id);
+    list.push({id:uid('h'), symbol, shares, costPerShare:cost});
+    saveHoldings(acc.id, list);
+    fetchStockPrice(symbol).then(render);
     render();
   });
 }
@@ -719,7 +897,7 @@ function renderTags(){
 }
 
 (async function init(){
-  await Promise.all([loadFx(), loadLivePrice(), loadSynced()]);
+  await Promise.all([loadFx(), loadLivePrice(), loadSynced(), fetchAllStockPrices()]);
   render();
 })();
 </script>
