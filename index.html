@@ -334,6 +334,7 @@ const DICT = {
   promptEntryTag:['ใส่แท็กสำหรับรายการนี้ (เว้นว่างเพื่อลบแท็ก)','Set a tag for this entry (leave blank to clear)'],
   promptRenameTag:['เปลี่ยนชื่อแท็ก','Rename tag'],
   promptDeleteTag:['ลบแท็ก','Delete tag'], promptDeleteTagSuffix:['? รายการที่เคยติดแท็กนี้จะกลายเป็น "ไม่มีแท็ก"','? Entries with this tag will become "Untagged"'],
+  addTagShort:['+ แท็ก','+ tag'],
 };
 let LANG = localStorage.getItem(LS_LANG) || 'th';
 function t(key){ const e = DICT[key]; return e ? e[LANG==='th'?0:1] : key; }
@@ -561,7 +562,7 @@ document.getElementById('importFile').onchange = (e) => {
       if(data.holdings) Object.entries(data.holdings).forEach(([id,list])=>saveHoldings(id,list));
       saveAccounts(); saveCryptoAccounts(); saveTagOverrides(); saveTagRegistry(); saveStockAccounts();
       fetchAllStockPrices().then(render);
-    }catch(err){ alert('ไฟล์ไม่ถูกต้อง'); }
+    }catch(err){ alert(t('invalidFile')); }
   };
   reader.readAsText(file);
 };
@@ -776,11 +777,11 @@ function renderAccountDetail(acc){
   const accent = cssVar('--accent'), accent2 = cssVar('--accent-2'), mutedSoft = cssVar('--muted-soft');
 
   const entryFormHtml = `<form class="inline entry" data-add-entry="${acc.id}">
-    <input type="number" step="any" placeholder="ใช้ (THB)" data-f="spent" required>
-    <input type="number" step="any" placeholder="ราคา (THB/BTC)" data-f="price" required>
-    <input type="number" step="any" placeholder="ได้ (BTC) auto" data-f="btc">
-    <input list="tagOptions" placeholder="แท็ก (ไม่บังคับ)" data-f="tag">
-    <button type="submit">เพิ่ม</button>
+    <input type="number" step="any" placeholder="${t('spentPh')}" data-f="spent" required>
+    <input type="number" step="any" placeholder="${t('pricePh')}" data-f="price" required>
+    <input type="number" step="any" placeholder="${t('btcAutoPh')}" data-f="btc">
+    <input list="tagOptions" placeholder="${t('tagPh')}" data-f="tag">
+    <button type="submit">${t('addBtn')}</button>
   </form>`;
 
   if(!entries.length){
@@ -825,7 +826,7 @@ function renderAccountDetail(acc){
   const rows = sorted.map(e => `<tr>
       <td>${new Date(e.time).toLocaleString(dateLocale(),{dateStyle:'medium',timeStyle:'short'})}</td>
       <td class="mono">${fmt(e.spent)}</td><td class="mono">${fmt(e.price)}</td><td class="mono">${fmt(e.btc,8)}</td>
-      <td><span class="tag-chip" onclick="editEntryTag('${acc.id}','${e.id}','${(e.tag||'').replace(/'/g,"\\'")}')">${e.tag||'+ แท็ก'}</span></td>
+      <td><span class="tag-chip" onclick="editEntryTag('${acc.id}','${e.id}','${(e.tag||'').replace(/'/g,"\\'")}')">${e.tag||t('addTagShort')}</span></td>
       <td>${acc.source==='manual' ? `<span class="icon-btn danger" onclick="removeEntry('${acc.id}','${e.id}')">✕</span>` : ''}</td>
     </tr>`).join('');
 
@@ -833,7 +834,7 @@ function renderAccountDetail(acc){
     <div class="stat-strip">${strip}</div>
     <svg class="chart">${priceSvg}</svg>
     <div class="table-wrap"><table><thead><tr><th>${t('colTime')}</th><th>${t('colSpentFull')}</th><th>${t('colPriceFull')}</th><th>${t('colBtcFull')}</th><th>${t('colTag')}</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>
-    ${acc.source==='manual' ? entryFormHtml : '<div class="hint">บัญชีนี้ sync อัตโนมัติจาก Bitkub ทุกชั่วโมง — กดที่แท็กในตารางเพื่อแก้ไขได้เสมอ</div>'}
+    ${acc.source==='manual' ? entryFormHtml : `<div class="hint">${t('syncHint')}</div>`}
   `;
   host.querySelector('svg.chart').setAttribute('viewBox','0 0 640 200');
   bindEntryForm(host, acc);
@@ -861,16 +862,16 @@ function bindEntryForm(host, acc){
 function renderStockAccountDetail(acc){
   const host = document.getElementById('stock-expand-'+acc.id);
   const holdings = holdingsOf(acc.id);
-  const noKeyNote = twelveKey ? '' : '<div class="hint">ยังไม่ได้ใส่ Twelve Data API key ในหน้าตั้งค่า — ใช้ต้นทุนต่อหุ้นแทนราคาตลาดไปก่อน</div>';
+  const noKeyNote = twelveKey ? '' : `<div class="hint">${t('noTwelveKeyHint')}</div>`;
 
   const addForm = `<form class="inline" data-add-holding="${acc.id}" style="grid-template-columns:1fr 1fr 1fr auto; margin-top:12px">
-    <input placeholder="Symbol เช่น VOO" data-f="symbol" style="text-transform:uppercase" required>
-    <input type="number" step="any" placeholder="จำนวนหุ้น" data-f="shares" required>
-    <input type="number" step="any" placeholder="ต้นทุน/หุ้น (USD)" data-f="cost" required>
-    <button type="submit">เพิ่ม</button>
+    <input placeholder="${t('symbolPh')}" data-f="symbol" style="text-transform:uppercase" required>
+    <input type="number" step="any" placeholder="${t('sharesPh')}" data-f="shares" required>
+    <input type="number" step="any" placeholder="${t('costPerSharePh')}" data-f="cost" required>
+    <button type="submit">${t('addBtn')}</button>
   </form>`;
 
-  if(!holdings.length){ host.innerHTML = `<div class="empty">ยังไม่มีหุ้นในบัญชีนี้</div>${noKeyNote}${addForm}`; bindHoldingForm(host, acc); return; }
+  if(!holdings.length){ host.innerHTML = `<div class="empty">${t('noHoldings')}</div>${noKeyNote}${addForm}`; bindHoldingForm(host, acc); return; }
 
   let totalValue=0, totalCost=0;
   const rows = holdings.map(h=>{
@@ -952,29 +953,30 @@ function renderTags(){
       ${tag}
       <span class="icon-btn" style="padding:0 3px" onclick="renameTagPrompt('${tag.replace(/'/g,"\\'")}')">✎</span>
       <span class="icon-btn danger" style="padding:0 3px" onclick="deleteTagPrompt('${tag.replace(/'/g,"\\'")}')">✕</span>
-    </span>`).join('') || '<div class="empty">ยังไม่มีแท็ก — สร้างใหม่ด้านบนได้เลย</div>';
+    </span>`).join('') || `<div class="empty">${t('noTagsYet')}</div>`;
 
   const groups = {};
   cryptoAccounts.forEach(acc => accountEntries(acc).forEach(e => {
-    const tag = e.tag || 'ไม่มีแท็ก';
+    const tag = e.tag || t('untagged');
     (groups[tag] = groups[tag]||[]).push({...e, accName:acc.name});
   }));
-  const keys = Object.keys(groups).sort((a,b)=> (a==='ไม่มีแท็ก')-(b==='ไม่มีแท็ก') || a.localeCompare(b));
+  const keys = Object.keys(groups).sort((a,b)=> (a===t('untagged'))-(b===t('untagged')) || a.localeCompare(b));
   document.getElementById('tagsWrap').innerHTML = keys.map(tag=>{
     const items = groups[tag];
     const spent = items.reduce((a,e)=>a+(e.spent||0),0);
     const btc = items.reduce((a,e)=>a+(e.btc||0),0);
     const rows = items.sort((a,b)=>new Date(b.time)-new Date(a.time)).map(e=>`
-      <tr><td>${e.accName}</td><td>${new Date(e.time).toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'})}</td>
+      <tr><td>${e.accName}</td><td>${new Date(e.time).toLocaleDateString(dateLocale(),{day:'numeric',month:'short',year:'numeric'})}</td>
       <td class="mono">${fmt(e.spent)}</td><td class="mono">${fmt(e.btc,8)}</td></tr>`).join('');
     return `<div class="tag-group">
       <div class="tag-group-head"><span class="t">🏷️ ${tag}</span><span class="v mono">THB ${fmt(spent)} · ${fmt(btc,8)} BTC</span></div>
-      <div class="table-wrap"><table><thead><tr><th>บัญชี</th><th>วันที่</th><th>ใช้</th><th>BTC</th></tr></thead><tbody>${rows}</tbody></table></div>
+      <div class="table-wrap"><table><thead><tr><th>${t('colAccount')}</th><th>${t('colDate')}</th><th>${t('colSpentFull')}</th><th>${t('colBtcFull')}</th></tr></thead><tbody>${rows}</tbody></table></div>
     </div>`;
-  }).join('') || '<div class="empty">ยังไม่มีรายการที่ติดแท็ก</div>';
+  }).join('') || `<div class="empty">${t('noTagged')}</div>`;
 }
 
 (async function init(){
+  applyStaticI18n();
   await Promise.all([loadFx(), loadLivePrice(), loadSynced(), fetchAllStockPrices()]);
   render();
 })();
