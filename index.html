@@ -159,14 +159,14 @@
   <!-- ===== HOME ===== -->
   <div class="view active" id="view-home">
     <div class="glass hero">
-      <div class="eyebrow">ภาพรวมสินทรัพย์</div>
+      <div class="eyebrow" data-i18n="eyebrow">ภาพรวมสินทรัพย์</div>
       <div class="hero-num" id="netWorth">THB —</div>
       <div class="hero-sub" id="netWorthUsd"></div>
       <div class="updated" id="updatedLine"></div>
     </div>
 
     <div class="glass panel">
-      <div class="section-head"><h2>สัดส่วนสินทรัพย์</h2></div>
+      <div class="section-head"><h2 data-i18n="allocationHead">สัดส่วนสินทรัพย์</h2></div>
       <div class="allocation">
         <svg width="140" height="140" viewBox="0 0 140 140" id="donut"></svg>
         <div class="alloc-list" id="allocList"></div>
@@ -174,47 +174,47 @@
     </div>
 
     <div class="section-head" style="margin-top:22px">
-      <h2 style="font-size:14px">บัญชีคริปโต</h2>
-      <button class="text" id="addCryptoBtn">+ เพิ่มบัญชี</button>
+      <h2 style="font-size:14px" data-i18n="cryptoAccountsHead">บัญชีคริปโต</h2>
+      <button class="text" id="addCryptoBtn" data-i18n="addAccountBtn">+ เพิ่มบัญชี</button>
     </div>
     <div id="cryptoAccountsList"></div>
 
     <div class="section-head" style="margin-top:22px">
-      <h2 style="font-size:14px">บัญชีหุ้น (US)</h2>
-      <button class="text" id="addStockAcctBtn">+ เพิ่มบัญชี</button>
+      <h2 style="font-size:14px" data-i18n="stockAccountsHead">บัญชีหุ้น (US)</h2>
+      <button class="text" id="addStockAcctBtn" data-i18n="addAccountBtn">+ เพิ่มบัญชี</button>
     </div>
     <div id="stockAccountsList"></div>
 
     <div class="section-head" style="margin-top:22px">
-      <h2 style="font-size:14px">บัญชีอื่นๆ</h2>
+      <h2 style="font-size:14px" data-i18n="otherAccountsHead">บัญชีอื่นๆ</h2>
     </div>
     <div id="otherAccountsList"></div>
 
     <form class="glass panel inline" id="addAccountForm" style="margin-top:14px">
-      <input id="accName" placeholder="ชื่อบัญชี เช่น Dime — หุ้น US" required>
+      <input id="accName" data-i18n-ph="accNamePh" placeholder="ชื่อบัญชี เช่น Dime — หุ้น US" required>
       <select id="accType">
-        <option value="th-stock">หุ้นไทย</option>
-        <option value="cash">เงินสด</option>
-        <option value="other">อื่นๆ</option>
+        <option value="th-stock" data-i18n="typeThStock">หุ้นไทย</option>
+        <option value="cash" data-i18n="typeCash">เงินสด</option>
+        <option value="other" data-i18n="typeOther">อื่นๆ</option>
       </select>
       <select id="accCurrency"><option value="THB">THB</option><option value="USD">USD</option></select>
-      <input id="accValue" type="number" step="any" placeholder="มูลค่า" required>
-      <button type="submit">เพิ่ม</button>
+      <input id="accValue" type="number" step="any" data-i18n-ph="valuePh" placeholder="มูลค่า" required>
+      <button type="submit" data-i18n="addBtn">เพิ่ม</button>
     </form>
   </div>
 
   <!-- ===== TAGS ===== -->
   <div class="view" id="view-tags">
     <div class="glass panel">
-      <div class="section-head"><h2>จัดการแท็ก</h2></div>
+      <div class="section-head"><h2 data-i18n="manageTagsHead">จัดการแท็ก</h2></div>
       <form class="inline" id="addTagForm" style="grid-template-columns:1fr auto">
-        <input id="newTagName" placeholder="ชื่อแท็กใหม่ เช่น ถือยาว, เทรด, ของขวัญ" required>
-        <button type="submit">สร้างแท็ก</button>
+        <input id="newTagName" data-i18n-ph="newTagPh" placeholder="ชื่อแท็กใหม่ เช่น ถือยาว, เทรด, ของขวัญ" required>
+        <button type="submit" data-i18n="createTagBtn">สร้างแท็ก</button>
       </form>
       <div id="tagChipsWrap" style="margin-top:14px; display:flex; flex-wrap:wrap; gap:8px"></div>
     </div>
     <div class="glass panel">
-      <div class="section-head"><h2>รายการตามแท็ก</h2></div>
+      <div class="section-head"><h2 data-i18n="byTagHead">รายการตามแท็ก</h2></div>
       <div id="tagsWrap"></div>
     </div>
   </div>
@@ -222,26 +222,26 @@
   <!-- ===== SETTINGS ===== -->
   <div class="view" id="view-settings">
     <div class="glass panel">
-      <h2>ธีม &amp; ภาษา</h2>
+      <h2 data-i18n="themeLangHead">ธีม &amp; ภาษา</h2>
       <div class="toolbar">
-        <button class="ghost" id="themeToggle">🌙 สลับธีม</button>
-        <button class="ghost" id="langToggleBtn">🌐 EN / TH</button>
+        <button class="ghost" id="themeToggle"><span data-i18n="themeToggleBtn">🌙 สลับธีม</span></button>
+        <button class="ghost" id="langToggleBtn">🌐 EN</button>
       </div>
     </div>
     <div class="glass panel">
       <h2>Stock price API</h2>
-      <div class="hint">ใส่ API key ฟรีจาก twelvedata.com (สมัครไม่ต้องใช้บัตร) เพื่อให้ราคาหุ้น US อัปเดตอัตโนมัติ — ถ้าไม่ใส่ ระบบจะใช้ต้นทุนแทนราคาตลาด</div>
+      <div class="hint" data-i18n="twelveHint">ใส่ API key ฟรีจาก twelvedata.com (สมัครไม่ต้องใช้บัตร) เพื่อให้ราคาหุ้น US อัปเดตอัตโนมัติ — ถ้าไม่ใส่ ระบบจะใช้ต้นทุนแทนราคาตลาด</div>
       <form class="inline" id="twelveKeyForm" style="grid-template-columns:1fr auto; margin-top:10px">
         <input id="twelveKeyInput" placeholder="Twelve Data API key">
-        <button type="submit">บันทึก</button>
+        <button type="submit" data-i18n="saveBtn">บันทึก</button>
       </form>
     </div>
     <div class="glass panel">
-      <h2>ข้อมูลบัญชี</h2>
-      <div class="hint">บัญชีและรายการที่กรอกมือจะเก็บไว้ในเบราว์เซอร์นี้เท่านั้น — Export สำรองไว้เป็นระยะ</div>
+      <h2 data-i18n="accountDataHead">ข้อมูลบัญชี</h2>
+      <div class="hint" data-i18n="backupHint">บัญชีและรายการที่กรอกมือจะเก็บไว้ในเบราว์เซอร์นี้เท่านั้น — Export สำรองไว้เป็นระยะ</div>
       <div class="toolbar">
-        <button class="text" id="exportBtn">⬇ Export ทั้งหมด (JSON)</button>
-        <button class="text" id="importBtn">⬆ Import</button>
+        <button class="text" id="exportBtn" data-i18n="exportAllBtn">⬇ Export ทั้งหมด (JSON)</button>
+        <button class="text" id="importBtn" data-i18n="importBtn">⬆ Import</button>
         <input type="file" id="importFile" accept="application/json" style="display:none">
       </div>
     </div>
@@ -251,9 +251,9 @@
 </div>
 
 <div class="navbar" id="navbar">
-  <button class="navbtn active" data-view="home">🏠<span class="lbl">หน้าแรก</span></button>
-  <button class="navbtn" data-view="tags">🏷️<span class="lbl">แท็ก</span></button>
-  <button class="navbtn" data-view="settings">⚙️<span class="lbl">ตั้งค่า</span></button>
+  <button class="navbtn active" data-view="home">🏠<span class="lbl" data-i18n="navHome">หน้าแรก</span></button>
+  <button class="navbtn" data-view="tags">🏷️<span class="lbl" data-i18n="navTags">แท็ก</span></button>
+  <button class="navbtn" data-view="settings">⚙️<span class="lbl" data-i18n="navSettings">ตั้งค่า</span></button>
 </div>
 
 <script>
@@ -273,6 +273,77 @@ function saveJSON(key, val){ try{ localStorage.setItem(key, JSON.stringify(val))
 function fmt(n,d=0){ if(n==null||isNaN(n)) return '—'; return Number(n).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}); }
 function uid(p){ return p+'-'+Date.now()+'-'+Math.random().toString(36).slice(2,7); }
 
+// ---- i18n ----
+const LS_LANG = 'net_worth_lang_v1';
+const DICT = {
+  eyebrow:['ภาพรวมสินทรัพย์','Total Assets Overview'],
+  allocationHead:['สัดส่วนสินทรัพย์','Asset Allocation'],
+  cryptoAccountsHead:['บัญชีคริปโต','Crypto Accounts'],
+  stockAccountsHead:['บัญชีหุ้น (US)','Stock Accounts (US)'],
+  otherAccountsHead:['บัญชีอื่นๆ','Other Accounts'],
+  addAccountBtn:['+ เพิ่มบัญชี','+ Add account'],
+  accNamePh:['ชื่อบัญชี เช่น Dime — หุ้น US','Account name e.g. Dime — US Stocks'],
+  typeThStock:['หุ้นไทย','Thai Stocks'], typeCash:['เงินสด','Cash'], typeOther:['อื่นๆ','Other'], typeCrypto:['คริปโต','Crypto'], typeUsStock:['หุ้น US','US Stocks'],
+  valuePh:['มูลค่า','Value'], addBtn:['เพิ่ม','Add'],
+  manageTagsHead:['จัดการแท็ก','Manage Tags'],
+  newTagPh:['ชื่อแท็กใหม่ เช่น ถือยาว, เทรด, ของขวัญ','New tag name e.g. Long-term, Trading, Gift'],
+  createTagBtn:['สร้างแท็ก','Create tag'],
+  byTagHead:['รายการตามแท็ก','Entries by tag'],
+  themeLangHead:['ธีม & ภาษา','Theme & Language'],
+  themeToggleBtn:['🌙 สลับธีม','🌙 Toggle theme'],
+  twelveHint:['ใส่ API key ฟรีจาก twelvedata.com (สมัครไม่ต้องใช้บัตร) เพื่อให้ราคาหุ้น US อัปเดตอัตโนมัติ — ถ้าไม่ใส่ ระบบจะใช้ต้นทุนแทนราคาตลาด',
+    'Add a free API key from twelvedata.com (no card needed) so US stock prices update automatically — without it, cost basis is used instead of the market price'],
+  saveBtn:['บันทึก','Save'],
+  accountDataHead:['ข้อมูลบัญชี','Account Data'],
+  backupHint:['บัญชีและรายการที่กรอกมือจะเก็บไว้ในเบราว์เซอร์นี้เท่านั้น — Export สำรองไว้เป็นระยะ','Manually added accounts and entries are stored in this browser only — export a backup regularly'],
+  exportAllBtn:['⬇ Export ทั้งหมด (JSON)','⬇ Export all (JSON)'],
+  importBtn:['⬆ Import','⬆ Import'],
+  navHome:['หน้าแรก','Home'], navTags:['แท็ก','Tags'], navSettings:['ตั้งค่า','Settings'],
+  autoSync:['sync อัตโนมัติ','auto-synced'], manualSrc:['กรอกมือ','manual'],
+  updatedAt:['อัปเดตล่าสุด:','Updated:'],
+  noData:['ยังไม่มีข้อมูล','No data'], noAccounts:['ยังไม่มีบัญชี','No accounts yet'],
+  noCryptoAccounts:['ยังไม่มีบัญชีคริปโต','No crypto accounts yet'],
+  noStockAccounts:['ยังไม่มีบัญชีหุ้น','No stock accounts yet'],
+  noSyncYet:['ยังไม่มีข้อมูล sync','No sync data yet'],
+  syncedAt:['BTC (Bitkub) ซิงก์ล่าสุด:','BTC (Bitkub) last synced:'],
+  stocksCount:['หุ้น','stocks'],
+  statInvested:['ลงทุนสะสม','Total invested'], statBtc:['BTC สะสม','BTC held'],
+  statAvgCost:['ต้นทุนเฉลี่ย','Average cost'], statPnl:['กำไร/ขาดทุน','Profit / Loss'],
+  statCount:['จำนวนครั้ง','Purchases'],
+  noEntries:['ยังไม่มีรายการซื้อ','No purchases yet'],
+  noHoldings:['ยังไม่มีหุ้นในบัญชีนี้','No holdings in this account yet'],
+  syncHint:['บัญชีนี้ sync อัตโนมัติจาก Bitkub ทุกชั่วโมง — กดที่แท็กในตารางเพื่อแก้ไขได้เสมอ','This account syncs from Bitkub automatically every hour — click a tag in the table to edit it anytime'],
+  noTwelveKeyHint:['ยังไม่ได้ใส่ Twelve Data API key ในหน้าตั้งค่า — ใช้ต้นทุนต่อหุ้นแทนราคาตลาดไปก่อน','No Twelve Data API key set in Settings yet — using cost per share instead of market price for now'],
+  totalValue:['มูลค่ารวม','Total value'], totalCost:['ต้นทุนรวม','Total cost'],
+  colTime:['เวลา','Time'], colSpentFull:['ใช้','Spent'], colPriceFull:['ราคา','Price'], colBtcFull:['BTC','BTC'], colTag:['แท็ก','Tag'],
+  colSymbol:['Symbol','Symbol'], colShares:['หุ้น','Shares'], colCostPerShare:['ต้นทุน/หุ้น','Cost/Share'], colTotalCost:['ต้นทุนรวม','Total Cost'], colPrice:['ราคา','Price'], colValue:['มูลค่า','Value'], colPl:['P/L','P/L'],
+  spentPh:['ใช้ (THB)','Spent (THB)'], pricePh:['ราคา (THB/BTC)','Price (THB/BTC)'], btcAutoPh:['ได้ (BTC) auto','BTC received (auto)'], tagPh:['แท็ก (ไม่บังคับ)','Tag (optional)'],
+  symbolPh:['Symbol เช่น VOO','Symbol e.g. VOO'], sharesPh:['จำนวนหุ้น','No. of shares'], costPerSharePh:['ต้นทุน/หุ้น (USD)','Cost/share (USD)'],
+  noTagged:['ยังไม่มีรายการที่ติดแท็ก','No tagged entries yet'],
+  noTagsYet:['ยังไม่มีแท็ก — สร้างใหม่ด้านบนได้เลย','No tags yet — create one above'],
+  untagged:['ไม่มีแท็ก','Untagged'],
+  colAccount:['บัญชี','Account'], colDate:['วันที่','Date'],
+  priceFallbackNote:['* ใช้ราคาซื้อครั้งล่าสุดประมาณมูลค่า เนื่องจากดึงราคาสดไม่สำเร็จ','* Using the last purchase price as an estimate — live price fetch failed'],
+  invalidFile:['ไฟล์ไม่ถูกต้อง','Invalid file'],
+  promptNewValue:['มูลค่าใหม่ของ','New value for'],
+  promptNewCryptoAcct:['ชื่อบัญชีคริปโตใหม่ เช่น "Maxbit" หรือ "Cold wallet"','New crypto account name e.g. "Maxbit" or "Cold wallet"'],
+  promptNewStockAcct:['ชื่อบัญชีหุ้น เช่น "Dime"','Stock account name e.g. "Dime"'],
+  promptRenameAccount:['เปลี่ยนชื่อบัญชี','Rename account'],
+  promptDeleteCryptoAcct:['ลบบัญชี','Delete account'], promptDeleteCryptoAcctSuffix:['และรายการทั้งหมดในนั้น?','and all its entries?'],
+  promptDeleteStockAcctSuffix:['และหุ้นทั้งหมดในนั้น?','and all its holdings?'],
+  promptEntryTag:['ใส่แท็กสำหรับรายการนี้ (เว้นว่างเพื่อลบแท็ก)','Set a tag for this entry (leave blank to clear)'],
+  promptRenameTag:['เปลี่ยนชื่อแท็ก','Rename tag'],
+  promptDeleteTag:['ลบแท็ก','Delete tag'], promptDeleteTagSuffix:['? รายการที่เคยติดแท็กนี้จะกลายเป็น "ไม่มีแท็ก"','? Entries with this tag will become "Untagged"'],
+};
+let LANG = localStorage.getItem(LS_LANG) || 'th';
+function t(key){ const e = DICT[key]; return e ? e[LANG==='th'?0:1] : key; }
+function dateLocale(){ return LANG==='th' ? 'th-TH' : 'en-US'; }
+function applyStaticI18n(){
+  document.querySelectorAll('[data-i18n]').forEach(el => el.textContent = t(el.getAttribute('data-i18n')));
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => el.placeholder = t(el.getAttribute('data-i18n-ph')));
+  document.getElementById('langToggleBtn').textContent = LANG==='th' ? '🌐 EN' : '🌐 ไทย';
+}
+
 // ---- theme ----
 (function initTheme(){
   const saved = localStorage.getItem(LS_THEME) || 'dark';
@@ -284,7 +355,13 @@ document.getElementById('themeToggle').onclick = () => {
   localStorage.setItem(LS_THEME, next);
   render();
 };
-document.getElementById('langToggleBtn').onclick = () => alert('ตอนนี้ตัวเลือกภาษาปิดไว้ชั่วคราวในเวอร์ชันนี้ — ระบบยังเป็นภาษาไทยเป็นหลัก');
+document.getElementById('langToggleBtn').onclick = () => {
+  LANG = LANG === 'th' ? 'en' : 'th';
+  localStorage.setItem(LS_LANG, LANG);
+  applyStaticI18n();
+  render();
+  if(document.getElementById('view-tags').classList.contains('active')) renderTags();
+};
 
 // ---- nav ----
 document.getElementById('navbar').addEventListener('click', e=>{
@@ -414,7 +491,7 @@ document.getElementById('addAccountForm').addEventListener('submit', e=>{
 function removeAccount(id){ manualAccounts = manualAccounts.filter(a=>a.id!==id); saveAccounts(); render(); }
 function editAccountValue(id){
   const acc = manualAccounts.find(a=>a.id===id); if(!acc) return;
-  const v = prompt(`มูลค่าใหม่ของ "${acc.name}" (${acc.currency})`, acc.value);
+  const v = prompt(`${t('promptNewValue')} "${acc.name}" (${acc.currency})`, acc.value);
   if(v===null) return;
   const num = parseFloat(v); if(isNaN(num)) return;
   acc.value = num; acc.updated = new Date().toISOString();
@@ -423,19 +500,19 @@ function editAccountValue(id){
 
 // ---- crypto accounts CRUD ----
 document.getElementById('addCryptoBtn').onclick = () => {
-  const name = prompt('ชื่อบัญชีคริปโตใหม่ เช่น "Maxbit" หรือ "Cold wallet"');
+  const name = prompt(t('promptNewCryptoAcct'));
   if(!name) return;
   cryptoAccounts.push({id:uid('crypto'), name, source:'manual'});
   saveCryptoAccounts(); render();
 };
 function renameCryptoAccount(id){
   const acc = cryptoAccounts.find(a=>a.id===id); if(!acc) return;
-  const name = prompt('เปลี่ยนชื่อบัญชี', acc.name); if(!name) return;
+  const name = prompt(t('promptRenameAccount'), acc.name); if(!name) return;
   acc.name = name; saveCryptoAccounts(); render();
 }
 function deleteCryptoAccount(id){
   const acc = cryptoAccounts.find(a=>a.id===id); if(!acc || acc.source==='auto') return;
-  if(!confirm(`ลบบัญชี "${acc.name}" และรายการทั้งหมดในนั้น?`)) return;
+  if(!confirm(`${t('promptDeleteCryptoAcct')} "${acc.name}" ${t('promptDeleteCryptoAcctSuffix')}`)) return;
   cryptoAccounts = cryptoAccounts.filter(a=>a.id!==id);
   localStorage.removeItem(LS_ENTRIES_PREFIX+id);
   saveCryptoAccounts(); render();
@@ -446,7 +523,7 @@ function toggleAccountOpen(id){
 }
 function editEntryTag(accId, entryId, currentTag){
   const acc = cryptoAccounts.find(a=>a.id===accId); if(!acc) return;
-  const tag = prompt('ใส่แท็กสำหรับรายการนี้ (เว้นว่างเพื่อลบแท็ก)', currentTag||'');
+  const tag = prompt(t('promptEntryTag'), currentTag||'');
   if(tag===null) return;
   const trimmed = tag.trim();
   if(trimmed) createTag(trimmed);
@@ -495,17 +572,17 @@ function saveHoldings(accId, list){ saveJSON(LS_HOLDINGS_PREFIX+accId, list); }
 function holdingsOf(accId){ return loadJSON(LS_HOLDINGS_PREFIX+accId, []); }
 
 document.getElementById('addStockAcctBtn').onclick = () => {
-  const name = prompt('ชื่อบัญชีหุ้น เช่น "Dime"'); if(!name) return;
+  const name = prompt(t('promptNewStockAcct')); if(!name) return;
   stockAccounts.push({id:uid('stock'), name}); saveStockAccounts(); render();
 };
 function renameStockAccount(id){
   const acc = stockAccounts.find(a=>a.id===id); if(!acc) return;
-  const name = prompt('เปลี่ยนชื่อบัญชี', acc.name); if(!name) return;
+  const name = prompt(t('promptRenameAccount'), acc.name); if(!name) return;
   acc.name = name; saveStockAccounts(); render();
 }
 function deleteStockAccount(id){
   const acc = stockAccounts.find(a=>a.id===id); if(!acc) return;
-  if(!confirm(`ลบบัญชี "${acc.name}" และหุ้นทั้งหมดในนั้น?`)) return;
+  if(!confirm(`${t('promptDeleteCryptoAcct')} "${acc.name}" ${t('promptDeleteStockAcctSuffix')}`)) return;
   stockAccounts = stockAccounts.filter(a=>a.id!==id);
   localStorage.removeItem(LS_HOLDINGS_PREFIX+id);
   saveStockAccounts(); render();
@@ -554,7 +631,7 @@ function stockAccountValueThb(accId){
   return usdToThb(usdTotal) ?? usdTotal;
 }
 
-const TYPE_LABEL = {'us-stock':'หุ้น US', 'th-stock':'หุ้นไทย', cash:'เงินสด', other:'อื่นๆ', crypto:'คริปโต'};
+function typeLabel(ty){ return {'us-stock':t('typeUsStock'),'th-stock':t('typeThStock'),cash:t('typeCash'),other:t('typeOther'),crypto:t('typeCrypto')}[ty] || ty; }
 function typeColorVar(t){ return {'us-stock':'--accent-2','th-stock':'--amber',cash:'--slate',other:'--muted-soft',crypto:'--accent'}[t] || '--muted-soft'; }
 function cssVar(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
 
@@ -576,8 +653,8 @@ function render(){
   document.getElementById('netWorth').innerHTML = `THB <span class="accent">${fmt(total)}</span>`;
   document.getElementById('netWorthUsd').textContent = fxRate ? `≈ $${fmt(thbToUsd(total),2)}` : '';
   document.getElementById('updatedLine').textContent = synced.last_synced
-    ? 'BTC (Bitkub) ซิงก์ล่าสุด: ' + new Date(synced.last_synced).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'})
-    : 'ยังไม่มีข้อมูล sync';
+    ? t('syncedAt') + ' ' + new Date(synced.last_synced).toLocaleString(dateLocale(),{dateStyle:'medium',timeStyle:'short'})
+    : t('noSyncYet');
 
   // allocation by type (crypto grouped together, other by their type)
   const byType = {};
@@ -600,8 +677,8 @@ function render(){
   document.getElementById('allocList').innerHTML = types.sort((a,b)=>byType[b]-byType[a]).map(t=>{
     const pct = total ? (byType[t]/total*100):0;
     return `<div class="alloc-row"><i class="dot" style="background:${cssVar(typeColorVar(t))}"></i>
-      <span class="name">${TYPE_LABEL[t]||t}</span><span class="pct mono">${fmt(pct,1)}%</span><span class="val mono">THB ${fmt(byType[t])}</span></div>`;
-  }).join('') || '<div class="empty">ยังไม่มีข้อมูล</div>';
+      <span class="name">${typeLabel(t)}</span><span class="pct mono">${fmt(pct,1)}%</span><span class="val mono">THB ${fmt(byType[t])}</span></div>`;
+  }).join('') || `<div class="empty">${t('noData')}</div>`;
 
   // crypto accounts list
   document.getElementById('cryptoAccountsList').innerHTML = cryptoAssets.map(({acc,value})=>{
@@ -612,7 +689,7 @@ function render(){
         <div>
           <div class="acc-name-row">
             <span class="acc-name" style="cursor:pointer" onclick="toggleAccountOpen('${acc.id}')">${isOpen?'▾':'▸'} ${acc.name}</span>
-            <span class="acc-tag">${acc.source==='auto'?'sync อัตโนมัติ':'กรอกมือ'}</span>
+            <span class="acc-tag">${acc.source==='auto'?t('autoSync'):t('manualSrc')}</span>
           </div>
         </div>
         <div class="acc-val mono">THB ${fmt(value)}<span class="sub">${pct.toFixed(1)}%</span></div>
@@ -623,7 +700,7 @@ function render(){
       </div>
       <div class="acc-expand ${isOpen?'open':''}" id="expand-${acc.id}"></div>
     </div>`;
-  }).join('') || '<div class="empty">ยังไม่มีบัญชีคริปโต</div>';
+  }).join('') || `<div class="empty">${t('noCryptoAccounts')}</div>`;
 
   cryptoAssets.forEach(({acc}) => { if(openAccounts.has(acc.id)) renderAccountDetail(acc); });
 
@@ -635,7 +712,7 @@ function render(){
       <div class="acc-top">
         <div class="acc-name-row">
           <span class="acc-name" style="cursor:pointer" onclick="toggleStockAccountOpen('${acc.id}')">${isOpen?'▾':'▸'} ${acc.name}</span>
-          <span class="acc-tag">${holdingsOf(acc.id).length} หุ้น</span>
+          <span class="acc-tag">${holdingsOf(acc.id).length} ${t('stocksCount')}</span>
         </div>
         <div class="acc-val mono">THB ${fmt(value)}<span class="sub">${pct.toFixed(1)}%${usdLabel(value)}</span></div>
         <div class="acc-actions">
@@ -645,7 +722,7 @@ function render(){
       </div>
       <div class="acc-expand ${isOpen?'open':''}" id="stock-expand-${acc.id}"></div>
     </div>`;
-  }).join('') || '<div class="empty">ยังไม่มีบัญชีหุ้น</div>';
+  }).join('') || `<div class="empty">${t('noStockAccounts')}</div>`;
   stockAssets.forEach(({acc}) => { if(openStockAccounts.has(acc.id)) renderStockAccountDetail(acc); });
 
   // other accounts
@@ -655,8 +732,8 @@ function render(){
     return `<div class="glass acc-card">
       <div class="acc-top">
         <div>
-          <span class="acc-name">${acc.name}</span> <span class="acc-tag">${TYPE_LABEL[acc.type]}</span>
-          <div class="acc-meta">อัปเดตล่าสุด: ${new Date(acc.updated).toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'})}</div>
+          <span class="acc-name">${acc.name}</span> <span class="acc-tag">${typeLabel(acc.type)}</span>
+          <div class="acc-meta">${t('updatedAt')} ${new Date(acc.updated).toLocaleDateString(dateLocale(),{day:'numeric',month:'short',year:'numeric'})}</div>
         </div>
         <div class="acc-val mono">THB ${fmt(value)}<span class="sub">${pct.toFixed(1)}%</span></div>
         <div class="acc-actions">
@@ -665,7 +742,7 @@ function render(){
         </div>
       </div>
     </div>`;
-  }).join('') || '<div class="empty">ยังไม่มีบัญชี</div>';
+  }).join('') || `<div class="empty">${t('noAccounts')}</div>`;
 }
 
 // ---- shared chart helpers ----
@@ -685,7 +762,7 @@ function yAxisLabels(h,padT,min,max,color){
     <text x="4" y="${(h-2).toFixed(1)}" fill="${color}" font-size="10" font-family="JetBrains Mono">${fmt(min)}</text>`;
 }
 function xAxisDates(w,h,first,last,color){
-  const f=tv=>new Date(tv).toLocaleDateString('th-TH',{day:'numeric',month:'short'});
+  const f=tv=>new Date(tv).toLocaleDateString(dateLocale(),{day:'numeric',month:'short'});
   return `<text x="0" y="${h-2}" fill="${color}" font-size="9">${f(first)}</text>
     <text x="${w}" y="${h-2}" fill="${color}" font-size="9" text-anchor="end">${f(last)}</text>`;
 }
@@ -707,7 +784,7 @@ function renderAccountDetail(acc){
   </form>`;
 
   if(!entries.length){
-    host.innerHTML = `<div class="empty">ยังไม่มีรายการซื้อ</div>${acc.source==='manual'?entryFormHtml:''}`;
+    host.innerHTML = `<div class="empty">${t('noEntries')}</div>${acc.source==='manual'?entryFormHtml:''}`;
     bindEntryForm(host, acc); return;
   }
 
@@ -720,9 +797,9 @@ function renderAccountDetail(acc){
   const pnlPct = totalSpent ? pnl/totalSpent*100 : null;
 
   const strip = [
-    ['ลงทุนสะสม','THB '+fmt(totalSpent)+usdLabel(totalSpent),''],['BTC สะสม',fmt(totalBtc,8),''],
-    ['ต้นทุนเฉลี่ย','THB '+fmt(avgCost)+usdLabel(avgCost),''],['กำไร/ขาดทุน',(pnl>=0?'+':'')+fmt(pnlPct,2)+'%',pnl>=0?'pos':'neg'],
-    ['จำนวนครั้ง',entries.length,'']
+    [t('statInvested'),'THB '+fmt(totalSpent)+usdLabel(totalSpent),''],[t('statBtc'),fmt(totalBtc,8),''],
+    [t('statAvgCost'),'THB '+fmt(avgCost)+usdLabel(avgCost),''],[t('statPnl'),(pnl>=0?'+':'')+fmt(pnlPct,2)+'%',pnl>=0?'pos':'neg'],
+    [t('statCount'),entries.length,'']
   ].map(([l,v,c])=>`<div class="item"><div class="l">${l}</div><div class="v mono ${c}">${v}</div></div>`).join('');
 
   // price chart
@@ -746,7 +823,7 @@ function renderAccountDetail(acc){
 
   const sorted = [...entries].sort((a,b)=>new Date(b.time)-new Date(a.time));
   const rows = sorted.map(e => `<tr>
-      <td>${new Date(e.time).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'})}</td>
+      <td>${new Date(e.time).toLocaleString(dateLocale(),{dateStyle:'medium',timeStyle:'short'})}</td>
       <td class="mono">${fmt(e.spent)}</td><td class="mono">${fmt(e.price)}</td><td class="mono">${fmt(e.btc,8)}</td>
       <td><span class="tag-chip" onclick="editEntryTag('${acc.id}','${e.id}','${(e.tag||'').replace(/'/g,"\\'")}')">${e.tag||'+ แท็ก'}</span></td>
       <td>${acc.source==='manual' ? `<span class="icon-btn danger" onclick="removeEntry('${acc.id}','${e.id}')">✕</span>` : ''}</td>
@@ -755,7 +832,7 @@ function renderAccountDetail(acc){
   host.innerHTML = `
     <div class="stat-strip">${strip}</div>
     <svg class="chart">${priceSvg}</svg>
-    <div class="table-wrap"><table><thead><tr><th>เวลา</th><th>ใช้</th><th>ราคา</th><th>BTC</th><th>แท็ก</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>
+    <div class="table-wrap"><table><thead><tr><th>${t('colTime')}</th><th>${t('colSpentFull')}</th><th>${t('colPriceFull')}</th><th>${t('colBtcFull')}</th><th>${t('colTag')}</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>
     ${acc.source==='manual' ? entryFormHtml : '<div class="hint">บัญชีนี้ sync อัตโนมัติจาก Bitkub ทุกชั่วโมง — กดที่แท็กในตารางเพื่อแก้ไขได้เสมอ</div>'}
   `;
   host.querySelector('svg.chart').setAttribute('viewBox','0 0 640 200');
@@ -814,15 +891,15 @@ function renderStockAccountDetail(acc){
   }).join('');
   const totalPl = totalValue-totalCost, totalPlPct = totalCost? totalPl/totalCost*100:null;
   const strip = [
-    ['มูลค่ารวม', '$'+fmt(totalValue,2)+usdToThbLabel(totalValue), ''],
-    ['ต้นทุนรวม', '$'+fmt(totalCost,2)+usdToThbLabel(totalCost), ''],
-    ['กำไร/ขาดทุน', (totalPl>=0?'+':'')+fmt(totalPlPct,2)+'%', totalPl>=0?'pos':'neg'],
+    [t('totalValue'), '$'+fmt(totalValue,2)+usdToThbLabel(totalValue), ''],
+    [t('totalCost'), '$'+fmt(totalCost,2)+usdToThbLabel(totalCost), ''],
+    [t('statPnl'), (totalPl>=0?'+':'')+fmt(totalPlPct,2)+'%', totalPl>=0?'pos':'neg'],
   ].map(([l,v,c])=>`<div class="item"><div class="l">${l}</div><div class="v mono ${c}">${v}</div></div>`).join('');
 
   host.innerHTML = `
     <div class="stat-strip">${strip}</div>
     ${noKeyNote}
-    <div class="table-wrap"><table><thead><tr><th>Symbol</th><th>หุ้น</th><th>ต้นทุน/หุ้น</th><th>ต้นทุนรวม</th><th>ราคา</th><th>มูลค่า</th><th>P/L</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>
+    <div class="table-wrap"><table><thead><tr><th>${t('colSymbol')}</th><th>${t('colShares')}</th><th>${t('colCostPerShare')}</th><th>${t('colTotalCost')}</th><th>${t('colPrice')}</th><th>${t('colValue')}</th><th>${t('colPl')}</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>
     ${addForm}
   `;
   bindHoldingForm(host, acc);
@@ -856,13 +933,13 @@ document.getElementById('addTagForm').addEventListener('submit', e=>{
   renderTags();
 });
 function renameTagPrompt(tag){
-  const next = prompt('เปลี่ยนชื่อแท็ก', tag);
+  const next = prompt(t('promptRenameTag'), tag);
   if(!next || !next.trim() || next.trim()===tag) return;
   renameTagEverywhere(tag, next.trim());
   renderTags();
 }
 function deleteTagPrompt(tag){
-  if(!confirm(`ลบแท็ก "${tag}"? รายการที่เคยติดแท็กนี้จะกลายเป็น "ไม่มีแท็ก"`)) return;
+  if(!confirm(`${t('promptDeleteTag')} "${tag}"${t('promptDeleteTagSuffix')}`)) return;
   deleteTagEverywhere(tag);
   renderTags();
 }
